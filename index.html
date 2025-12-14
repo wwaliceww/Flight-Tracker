@@ -77,6 +77,46 @@
       border-radius: 999px;
       border: 1px solid rgba(148, 163, 184, 0.4);
       backdrop-filter: blur(12px);
+      z-index: 5;
+    }
+
+    /* Flight info bubble */
+    #flight-info {
+      position: absolute;
+      right: 1.25rem;
+      bottom: 1.25rem;
+      max-width: 320px;
+      background: rgba(15, 23, 42, 0.96);
+      border-radius: 1rem;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      padding: 0.9rem 1rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+      z-index: 6;
+      display: none; /* hidden until a flight is clicked */
+    }
+
+    #flight-info h3 {
+      margin: 0 0 0.35rem;
+      font-size: 1rem; /* slightly larger */
+    }
+
+    #flight-info p {
+      margin: 0.1rem 0;
+      font-size: 0.9rem; /* larger than the rest of the UI */
+      line-height: 1.35;
+    }
+
+    #flight-info .label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #9ca3af;
+    }
+
+    #flight-info .notes {
+      margin-top: 0.45rem;
+      font-style: italic;
+      color: #e5e7eb;
     }
 
     aside {
@@ -177,294 +217,4 @@
     .legend-color {
       width: 10px;
       height: 10px;
-      border-radius: 999px;
-      display: inline-block;
-      margin-right: 0.4rem;
-    }
-
-    footer {
-      padding: 0.6rem 1.5rem;
-      font-size: 0.75rem;
-      color: #9ca3af;
-      text-align: right;
-      border-top: 1px solid rgba(148, 163, 184, 0.2);
-      background: #020617;
-    }
-
-    @media (max-width: 900px) {
-      main {
-        grid-template-columns: 1fr;
-      }
-      #globe-container {
-        height: 50vh;
-      }
-      aside {
-        border-left: none;
-        border-top: 1px solid rgba(148, 163, 184, 0.25);
-      }
-    }
-  </style>
-</head>
-
-<body>
-  <header>
-    <div>
-      <h1>Our Flights for Love</h1>
-      <p>A 3D globe of every time we crossed the sky to see each other 🥺✈️</p>
-    </div>
-  </header>
-
-  <main>
-    <section id="globe-container">
-      <div id="globeViz"></div>
-      <div class="globe-hint">Drag to spin · Scroll to zoom · Hover flights to see details</div>
-    </section>
-
-    <aside>
-      <section class="stat-grid">
-        <div class="card">
-          <div class="card-title">Total Flights</div>
-          <div class="card-value" id="total-flights">–</div>
-          <div class="subtext" id="flight-years"></div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">Distance Flown</div>
-          <div class="card-value" id="total-distance">–</div>
-          <div class="subtext" id="distance-subtext"></div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">Time in the Air</div>
-          <div class="card-value" id="total-time">–</div>
-          <div class="subtext">Based on the flights you logged 💺</div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">Time Including Way Home</div>
-          <div class="card-value" id="total-time-returns">–</div>
-          <div class="subtext">Assuming every flight has a return of similar length 🔁</div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">Her &amp; His Flights</div>
-          <div class="card-value" id="her-his-flights">–</div>
-          <div class="subtext">
-            <span class="badge">
-              <span class="legend-color" style="background: #a855f7;"></span> Her routes
-            </span>
-            &nbsp;
-            <span class="badge">
-              <span class="legend-color" style="background: #38bdf8;"></span> His routes
-            </span>
-          </div>
-        </div>
-      </section>
-
-      <section style="margin-bottom: 1.5rem;">
-        <h2>Top Destinations</h2>
-        <ul id="top-destinations"></ul>
-      </section>
-
-      <section style="margin-bottom: 1.5rem;">
-        <h2>Flight Log</h2>
-        <ul id="flight-log" class="flight-log"></ul>
-      </section>
-    </aside>
-  </main>
-
-  <footer>
-    Built on a little blue marble with ✈️ and ❤️
-  </footer>
-
-  <script>
-    // 1. Your flight data
-    const flights = [
-      {
-        date: "2023-06-14",
-        from: "FCO",
-        fromName: "Rome Fiumicino",
-        fromLat: 41.8003,
-        fromLng: 12.2389,
-        to: "CDG",
-        toName: "Paris Charles de Gaulle",
-        toLat: 49.0097,
-        toLng: 2.5479,
-        distance_km: 1105,
-        duration_min: 120,
-        who: "her",
-        notes: "First trip to meet in Paris after months of texting 🥹"
-      },
-      {
-        date: "2023-08-02",
-        from: "JFK",
-        fromName: "New York JFK",
-        fromLat: 40.6413,
-        fromLng: -73.7781,
-        to: "FCO",
-        toName: "Rome Fiumicino",
-        toLat: 41.8003,
-        toLng: 12.2389,
-        distance_km: 6898,
-        duration_min: 510,
-        who: "him",
-        notes: "He flew to see me in Rome for the summer 🇮🇹"
-      }
-      // Add more flights here…
-    ];
-
-    // 2. Compute stats
-    function computeStats(flights) {
-      const totalFlights = flights.length;
-      let totalDistance = 0;
-      let totalMinutes = 0;
-      const airportCounts = {};
-      const years = new Set();
-      let herFlights = 0;
-      let hisFlights = 0;
-
-      flights.forEach(f => {
-        totalDistance += f.distance_km || 0;
-        totalMinutes += f.duration_min || 0;
-
-        if (f.who === "her") herFlights++;
-        if (f.who === "him") hisFlights++;
-
-        const date = new Date(f.date);
-        if (!isNaN(date)) years.add(date.getFullYear());
-
-        [f.fromName, f.toName].forEach(name => {
-          if (!name) return;
-          airportCounts[name] = (airportCounts[name] || 0) + 1;
-        });
-      });
-
-      const hours = Math.floor(totalMinutes / 60);
-      const minutes = totalMinutes % 60;
-
-      const sortedDestinations = Object.entries(airportCounts)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 5);
-
-      return {
-        totalFlights,
-        totalDistance,
-        hours,
-        minutes,
-        totalMinutes,
-        herFlights,
-        hisFlights,
-        sortedDestinations,
-        years: Array.from(years).sort()
-      };
-    }
-
-    const stats = computeStats(flights);
-
-    // 3. Render stats
-    document.getElementById("total-flights").textContent = stats.totalFlights;
-
-    const flightYearsEl = document.getElementById("flight-years");
-    if (stats.years.length === 1) {
-      flightYearsEl.textContent = `Since ${stats.years[0]}`;
-    } else if (stats.years.length > 1) {
-      flightYearsEl.textContent = `${stats.years[0]}–${stats.years[stats.years.length - 1]}`;
-    }
-
-    document.getElementById("total-distance").textContent =
-      `${stats.totalDistance.toLocaleString()} km`;
-
-    const aroundEarthKm = 40075;
-    const distanceSubEl = document.getElementById("distance-subtext");
-    if (stats.totalDistance > 0) {
-      const laps = stats.totalDistance / aroundEarthKm;
-      distanceSubEl.textContent = `${laps.toFixed(2)} × around the Earth 🌍`;
-    } else {
-      distanceSubEl.textContent = "";
-    }
-
-    document.getElementById("total-time").textContent =
-      `${stats.hours} h ${stats.minutes} min`;
-
-    const totalMinutesReturns = stats.totalMinutes * 2;
-    const hoursReturns = Math.floor(totalMinutesReturns / 60);
-    const minutesReturns = totalMinutesReturns % 60;
-    document.getElementById("total-time-returns").textContent =
-      `${hoursReturns} h ${minutesReturns} min`;
-
-    document.getElementById("her-his-flights").textContent =
-      `Her: ${stats.herFlights} · Him: ${stats.hisFlights}`;
-
-    const topDestinationsEl = document.getElementById("top-destinations");
-    topDestinationsEl.innerHTML = "";
-    stats.sortedDestinations.forEach(([name, count]) => {
-      const li = document.createElement("li");
-      li.textContent = `${name}: ${count} flights`;
-      topDestinationsEl.appendChild(li);
-    });
-
-    const flightLogEl = document.getElementById("flight-log");
-    const sortedFlights = [...flights].sort((a, b) => {
-      const da = new Date(a.date);
-      const db = new Date(b.date);
-      return da - db;
-    });
-
-    sortedFlights.forEach(f => {
-      const li = document.createElement("li");
-      const whoLabel = f.who === "her" ? "her flight" : f.who === "him" ? "his flight" : "both";
-      li.innerHTML = `
-        <div class="flight-log-date">${f.date}</div>
-        <div class="flight-log-route">${f.from} → ${f.to} (${whoLabel})</div>
-        <div class="flight-log-notes">${f.notes ? f.notes : "No notes yet"}</div>
-      `;
-      flightLogEl.appendChild(li);
-    });
-
-    // 4. 3D globe with STATIC arcs + country outlines
-    const globeElement = document.getElementById("globeViz");
-
-    const world = Globe()
-      (globeElement)
-      .globeImageUrl("https://unpkg.com/three-globe/example/img/earth-dark.jpg")
-      .bumpImageUrl("https://unpkg.com/three-globe/example/img/earth-topology.png")
-      .backgroundColor("rgba(0,0,0,0)")
-      .showAtmosphere(true)
-      .atmosphereColor("#38bdf8")
-      .atmosphereAltitude(0.22)
-      // static arcs (no dash / animation)
-      .arcStartLat(d => d.fromLat)
-      .arcStartLng(d => d.fromLng)
-      .arcEndLat(d => d.toLat)
-      .arcEndLng(d => d.toLng)
-      .arcAltitude(() => 0.2)
-      .arcStroke(0.8)
-      .arcsTransitionDuration(0)
-      .arcLabel(d => {
-        const whoLabel = d.who === "her" ? "Her flight" : d.who === "him" ? "His flight" : "Our flight";
-        return `${whoLabel}\n${d.fromName} → ${d.toName}\n${d.date}\n${d.distance_km.toLocaleString()} km · ${Math.round(d.duration_min / 60)} h ${d.duration_min % 60} min\n${d.notes || ""}`;
-      })
-      .arcColor(d => d.who === "her" ? "#a855f7" : "#38bdf8");
-
-    world.arcsData(flights);
-
-    // Add clearer country outlines
-    fetch("https://unpkg.com/three-globe/example/datasets/ne_110m_admin_0_countries.geojson")
-      .then(res => res.json())
-      .then(countries => {
-        world
-          .polygonsData(countries.features)
-          .polygonCapColor(() => "rgba(0,0,0,0)") // transparent fill
-          .polygonSideColor(() => "rgba(148,163,184,0.18)")
-          .polygonStrokeColor(() => "rgba(148,163,184,0.7)")
-          .polygonStrokeWidth(0.4);
-      });
-
-    // Start position + gentle auto-rotate
-    world.pointOfView({ lat: 25, lng: 5, altitude: 2.1 }, 0);
-    const controls = world.controls();
-    controls.autoRotate = true;
-    controls.autoRotateSpeed = 0.45;
-  </script>
-</body>
-</html>
+      border-radius: 9
