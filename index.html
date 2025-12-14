@@ -59,6 +59,7 @@
     #globe-container {
       position: relative;
       min-height: 70vh;
+      overflow: hidden; /* prevent globe from visually spilling over */
     }
 
     #globeViz {
@@ -265,9 +266,7 @@
       <div class="globe-hint">Drag to spin · Scroll to zoom · Click a route for details</div>
 
       <!-- Stagnant flight info bubble -->
-      <div id="flight-info">
-        <!-- Filled dynamically when a flight is clicked -->
-      </div>
+      <div id="flight-info"></div>
     </section>
 
     <aside>
@@ -482,7 +481,7 @@
       .bumpImageUrl("https://unpkg.com/three-globe/example/img/earth-topology.png")
       .backgroundColor("rgba(0,0,0,0)")
       .showAtmosphere(true)
-      .atmosphereColor("#a5b4fc")   // soft pale glow
+      .atmosphereColor("#a5b4fc")
       .atmosphereAltitude(0.18)
       // static arcs
       .arcStartLat(d => d.fromLat)
@@ -524,11 +523,19 @@
           .polygonStrokeWidth(0.4);
       });
 
-    // Camera + gentle auto-rotate
+    // Camera: initial view (no auto-rotate)
     world.pointOfView({ lat: 25, lng: 5, altitude: 2.1 }, 0);
+
+    // Controls: no auto-rotate + zoom limits so globe stays reasonable
     const controls = world.controls();
-    controls.autoRotate = true;
-    controls.autoRotateSpeed = 0.35;
+    controls.autoRotate = false;          // stop spinning on its own
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    // These values control how close/far you can zoom.
+    // Adjust if you want it a bit looser/tighter.
+    controls.minDistance = 180;   // don't let camera get *too* close
+    controls.maxDistance = 380;   // don't let camera get absurdly far
   </script>
 </body>
 </html>
