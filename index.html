@@ -414,9 +414,10 @@
         const date = new Date(f.date);
         if (!isNaN(date)) years.add(date.getFullYear());
 
-        [f.fromName, f.toName].forEach(name => {
-          if (!name) return;
-          airportCounts[name] = (airportCounts[name] || 0) + 1;
+        
+          // Count ONLY arrival airports for "top destinations"
+        if (f.toName) {
+          airportCounts[f.toName] = (airportCounts[f.toName] || 0) + 1;
         });
       });
 
@@ -506,6 +507,23 @@
     const globeElement = document.getElementById("globeViz");
     const infoPanel = document.getElementById("flight-info");
 
+    // 🔹 Give repeated routes a small offset so they don't sit exactly on top of each other
+const routeGroups = new Map();
+
+flights.forEach(f => {
+  const key = [f.fromLat, f.fromLng, f.toLat, f.toLng].join("|");
+  if (!routeGroups.has(key)) routeGroups.set(key, []);
+  routeGroups.get(key).push(f);
+});
+
+routeGroups.forEach(group => {
+  const n = group.length;
+  group.forEach((f, i) => {
+    // Center around 0: e.g. for 3 flights => -1, 0, +1
+    f._arcOffsetIndex = i - (n - 1) / 2;
+  });
+});
+
     const world = Globe()
       (globeElement)
       // realistic textures
@@ -520,7 +538,7 @@
       .arcStartLng(d => d.fromLng)
       .arcEndLat(d => d.toLat)
       .arcEndLng(d => d.toLng)
-      .arcAltitude(() => 0.2)
+      ..arcAltitude(d => 0.2 + (d._arcOffsetIndex || 0) * 0.04)
       .arcStroke(0.8)
       .arcsTransitionDuration(0)
       .arcColor(d => d.who === "her" ? "#c084fc" : "#60a5fa")
