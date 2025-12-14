@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Alice & Theo Flight Tracker – Around the Globe</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Three.js + Globe.gl -->
+  <script src="https://unpkg.com/three@0.158.0/build/three.min.js"></script>
+  <script src="https://unpkg.com/globe.gl@4.6.6/dist/globe.gl.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #020617, #020617 40%, #000 100%);
+      color: #e5e7eb;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 1rem 1.75rem;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: baseline;
+      backdrop-filter: blur(10px);
+      background: linear-gradient(to right, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.6));
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.4rem;
+    }
+
+    header p {
+      margin: 0;
+      opacity: 0.8;
+      font-size: 0.9rem;
+    }
+
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(260px, 1.2fr);
+      min-height: 0;
+    }
+
+    #globe-container {
+      position: relative;
+      min-height: 70vh;
+    }
+
+    #globeViz {
+      width: 100%;
+      height: 100%;
+    }
+
+    .globe-hint {
+      position: absolute;
+      left: 1.25rem;
+      bottom: 1.25rem;
+      font-size: 0.8rem;
+      color: #9ca3af;
+      background: rgba(15, 23, 42, 0.85);
+      padding: 0.5rem 0.75rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      backdrop-filter: blur(12px);
+    }
+
+    aside {
+      padding: 1.25rem 1.5rem 1.5rem;
+      background: radial-gradient(circle at top left, #020617, #020617 40%, #000 100%);
+      border-left: 1px solid rgba(148, 163, 184, 0.25);
+      overflow-y: auto;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card {
+      padding: 0.75rem 0.9rem;
+      border-radius: 0.9rem;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.85);
+    }
+
+    .card-title {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #9ca3af;
+      margin-bottom: 0.2rem;
+    }
+
+    .card-value {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .subtext {
+      font-size: 0.75rem;
+      color: #9ca3af;
+      margin-top: 0.1rem;
+    }
+
+    h2 {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: #9ca3af;
+      margin: 0 0 0.5rem;
+    }
+
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      font-size: 0.82rem;
+    }
+
+    li + li {
+      margin-top: 0.25rem;
+    }
+
+    .flight-log {
+      font-size: 0.8rem;
+    }
+
+    .flight-log li + li {
+      margin-top: 0.5rem;
+    }
+
+    .flight-log-date {
+      font-weight: 600;
+    }
+
+    .flight-log-route {
+      opacity: 0.95;
+    }
+
+    .flight-log-notes {
+      font-size: 0.75rem;
+      color: #9ca3af;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #9ca3af;
+    }
+
+    .legend-color {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      display: inline-block;
+      margin-right: 0.4rem;
+    }
+
+    footer {
+      padding: 0.6rem 1.5rem;
+      font-size: 0.75rem;
+      color: #9ca3af;
+      text-align: right;
+      border-top: 1px solid rgba(148, 163, 184, 0.2);
+      background: #020617;
+    }
+
+    @media (max-width: 900px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+      #globe-container {
+        height: 50vh;
+      }
+      aside {
+        border-left: none;
+        border-top: 1px solid rgba(148, 163, 184, 0.25);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div>
+      <h1>Alice & Theo Flight Tracker</h1>
+      <p>Every time we crossed the sky to see each other <3 </p>
+    </div>
+  </header>
+
+  <main>
+    <section id="globe-container">
+      <div id="globeViz"></div>
+      <div class="globe-hint">Drag to spin · Scroll to zoom · Tap flights to highlight</div>
+    </section>
+
+    <aside>
+      <section class="stat-grid">
+        <div class="card">
+          <div class="card-title">Total Flights</div>
+          <div class="card-value" id="total-flights">–</div>
+          <div class="subtext" id="flight-years"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Distance Flown</div>
+          <div class="card-value" id="total-distance">–</div>
+          <div class="subtext" id="distance-subtext"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Time in the Air</div>
+          <div class="card-value" id="total-time">–</div>
+          <div class="subtext">Based on the flights you logged 💺</div>
+        </div>
+
+        <!-- NEW CARD: total time including way home -->
+        <div class="card">
+          <div class="card-title">Time Including Way Home</div>
+          <div class="card-value" id="total-time-returns">–</div>
+          <div class="subtext">Assuming every flight has a return of similar length 🔁</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Her &amp; His Flights</div>
+          <div class="card-value" id="her-his-flights">–</div>
+          <div class="subtext">
+            <span class="badge">
+              <span class="legend-color" style="background: #a855f7;"></span> Her routes
+            </span>
+            &nbsp;
+            <span class="badge">
+              <span class="legend-color" style="background: #38bdf8;"></span> His routes
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <section style="margin-bottom: 1.5rem;">
+        <h2>Our Top Destinations</h2>
+        <ul id="top-destinations"></ul>
+      </section>
+
+      <section style="margin-bottom: 1.5rem;">
+        <h2>Flight Log</h2>
+        <ul id="flight-log" class="flight-log"></ul>
+      </section>
+    </aside>
+  </main>
+
+  <footer>
+    Made with ❤️
+  </footer>
+
+  <script>
+    // 1. Your flight data
+    const flights = [
+      {
+        date: "2023-06-14",
+        from: "FCO",
+        fromName: "Rome Fiumicino",
+        fromLat: 41.8003,
+        fromLng: 12.2389,
+        to: "CDG",
+        toName: "Paris Charles de Gaulle",
+        toLat: 49.0097,
+        toLng: 2.5479,
+        distance_km: 1105,
+        duration_min: 120,
+        who: "her",
+        notes: "First trip to meet in Paris after months of texting 🥹"
+      },
+      {
+        date: "2023-08-02",
+        from: "JFK",
+        fromName: "New York JFK",
+        fromLat: 40.6413,
+        fromLng: -73.7781,
+        to: "FCO",
+        toName: "Rome Fiumicino",
+        toLat: 41.8003,
+        toLng: 12.2389,
+        distance_km: 6898,
+        duration_min: 510,
+        who: "him",
+        notes: "He flew to see me in Rome for the summer 🇮🇹"
+      }
+      // Add more flights here…
+    ];
+
+    // 2. Compute stats
+    function computeStats(flights) {
+      const totalFlights = flights.length;
+      let totalDistance = 0;
+      let totalMinutes = 0;
+      const airportCounts = {};
+      const years = new Set();
+      let herFlights = 0;
+      let hisFlights = 0;
+
+      flights.forEach(f => {
+        totalDistance += f.distance_km || 0;
+        totalMinutes += f.duration_min || 0;
+
+        if (f.who === "her") herFlights++;
+        if (f.who === "him") hisFlights++;
+
+        const date = new Date(f.date);
+        if (!isNaN(date)) years.add(date.getFullYear());
+
+        [f.fromName, f.toName].forEach(name => {
+          if (!name) return;
+          airportCounts[name] = (airportCounts[name] || 0) + 1;
+        });
+      });
+
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+
+      const sortedDestinations = Object.entries(airportCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
+
+      return {
+        totalFlights,
+        totalDistance,
+        hours,
+        minutes,
+        totalMinutes,      // <— NEW: return total minutes
+        herFlights,
+        hisFlights,
+        sortedDestinations,
+        years: Array.from(years).sort()
+      };
+    }
+
+    const stats = computeStats(flights);
+
+    // 3. Render stats in the side panel
+    document.getElementById("total-flights").textContent = stats.totalFlights;
+
+    const flightYearsEl = document.getElementById("flight-years");
+    if (stats.years.length === 1) {
+      flightYearsEl.textContent = `Since ${stats.years[0]}`;
+    } else if (stats.years.length > 1) {
+      flightYearsEl.textContent = `${stats.years[0]}–${stats.years[stats.years.length - 1]}`;
+    }
+
+    document.getElementById("total-distance").textContent =
+      `${stats.totalDistance.toLocaleString()} km`;
+
+    const aroundEarthKm = 40075;
+    const distanceSubEl = document.getElementById("distance-subtext");
+    if (stats.totalDistance > 0) {
+      const laps = stats.totalDistance / aroundEarthKm;
+      distanceSubEl.textContent = `${laps.toFixed(2)} × around the Earth 🌍`;
+    } else {
+      distanceSubEl.textContent = "";
+    }
+
+    document.getElementById("total-time").textContent =
+      `${stats.hours} h ${stats.minutes} min`;
+
+    // NEW: total time including way home
+    const totalMinutesReturns = stats.totalMinutes * 2;
+    const hoursReturns = Math.floor(totalMinutesReturns / 60);
+    const minutesReturns = totalMinutesReturns % 60;
+    document.getElementById("total-time-returns").textContent =
+      `${hoursReturns} h ${minutesReturns} min`;
+
+    document.getElementById("her-his-flights").textContent =
+      `Her: ${stats.herFlights} · Him: ${stats.hisFlights}`;
+
+    const topDestinationsEl = document.getElementById("top-destinations");
+    topDestinationsEl.innerHTML = "";
+    stats.sortedDestinations.forEach(([name, count]) => {
+      const li = document.createElement("li");
+      li.textContent = `${name}: ${count} flights`;
+      topDestinationsEl.appendChild(li);
+    });
+
+    const flightLogEl = document.getElementById("flight-log");
+    const sortedFlights = [...flights].sort((a, b) => {
+      const da = new Date(a.date);
+      const db = new Date(b.date);
+      return da - db;
+    });
+
+    sortedFlights.forEach(f => {
+      const li = document.createElement("li");
+      const whoLabel = f.who === "her" ? "her flight" : f.who === "him" ? "his flight" : "both";
+      li.innerHTML = `
+        <div class="flight-log-date">${f.date}</div>
+        <div class="flight-log-route">${f.from} → ${f.to} (${whoLabel})</div>
+        <div class="flight-log-notes">${f.notes ? f.notes : "No notes yet"}</div>
+      `;
+      flightLogEl.appendChild(li);
+    });
+
+    // 4. 3D globe with arcs
+    const globeElement = document.getElementById("globeViz");
+
+    const world = Globe()
+      (globeElement)
+      .globeImageUrl("//unpkg.com/three-globe/example/img/earth-dark.jpg")
+      .bumpImageUrl("//unpkg.com/three-globe/example/img/earth-topology.png")
+      .backgroundColor("rgba(0,0,0,0)")
+      .showAtmosphere(true)
+      .atmosphereColor("#38bdf8")
+      .atmosphereAltitude(0.22)
+      .arcStartLat(d => d.fromLat)
+      .arcStartLng(d => d.fromLng)
+      .arcEndLat(d => d.toLat)
+      .arcEndLng(d => d.toLng)
+      .arcAltitude(d => 0.2)
+      .arcStroke(0.6)
+      .arcDashLength(0.4)
+      .arcDashGap(0.9)
+      .arcDashAnimateTime(2500)
+      .arcLabel(d => {
+        const whoLabel = d.who === "her" ? "Her flight" : d.who === "him" ? "His flight" : "Our flight";
+        return `${whoLabel}\n${d.fromName} → ${d.toName}\n${d.date}\n${d.distance_km.toLocaleString()} km · ${Math.round(d.duration_min / 60)} h ${d.duration_min % 60} min\n${d.notes || ""}`;
+      })
+      .arcColor(d => d.who === "her" ? "#a855f7" : "#38bdf8");
+
+    world.arcsData(flights);
+
+    world.pointOfView({ lat: 25, lng: 5, altitude: 2.1 }, 0);
+
+    const controls = world.controls();
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 0.45;
+  </script>
+</body>
+</html>
