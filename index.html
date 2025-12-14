@@ -217,7 +217,7 @@
   <main>
     <section id="globe-container">
       <div id="globeViz"></div>
-      <div class="globe-hint">Drag to spin · Scroll to zoom · Tap flights to highlight</div>
+      <div class="globe-hint">Drag to spin · Scroll to zoom · Hover flights to see details</div>
     </section>
 
     <aside>
@@ -421,7 +421,7 @@
       flightLogEl.appendChild(li);
     });
 
-    // 4. 3D globe with arcs
+    // 4. 3D globe with STATIC arcs + country outlines
     const globeElement = document.getElementById("globeViz");
 
     const world = Globe()
@@ -432,15 +432,14 @@
       .showAtmosphere(true)
       .atmosphereColor("#38bdf8")
       .atmosphereAltitude(0.22)
+      // static arcs (no dash / animation)
       .arcStartLat(d => d.fromLat)
       .arcStartLng(d => d.fromLng)
       .arcEndLat(d => d.toLat)
       .arcEndLng(d => d.toLng)
-      .arcAltitude(d => 0.2)
-      .arcStroke(0.6)
-      .arcDashLength(0.4)
-      .arcDashGap(0.9)
-      .arcDashAnimateTime(2500)
+      .arcAltitude(() => 0.2)
+      .arcStroke(0.8)
+      .arcsTransitionDuration(0)
       .arcLabel(d => {
         const whoLabel = d.who === "her" ? "Her flight" : d.who === "him" ? "His flight" : "Our flight";
         return `${whoLabel}\n${d.fromName} → ${d.toName}\n${d.date}\n${d.distance_km.toLocaleString()} km · ${Math.round(d.duration_min / 60)} h ${d.duration_min % 60} min\n${d.notes || ""}`;
@@ -449,8 +448,20 @@
 
     world.arcsData(flights);
 
-    world.pointOfView({ lat: 25, lng: 5, altitude: 2.1 }, 0);
+    // Add clearer country outlines
+    fetch("https://unpkg.com/three-globe/example/datasets/ne_110m_admin_0_countries.geojson")
+      .then(res => res.json())
+      .then(countries => {
+        world
+          .polygonsData(countries.features)
+          .polygonCapColor(() => "rgba(0,0,0,0)") // transparent fill
+          .polygonSideColor(() => "rgba(148,163,184,0.18)")
+          .polygonStrokeColor(() => "rgba(148,163,184,0.7)")
+          .polygonStrokeWidth(0.4);
+      });
 
+    // Start position + gentle auto-rotate
+    world.pointOfView({ lat: 25, lng: 5, altitude: 2.1 }, 0);
     const controls = world.controls();
     controls.autoRotate = true;
     controls.autoRotateSpeed = 0.45;
