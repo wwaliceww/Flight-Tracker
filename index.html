@@ -1,14 +1,13 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Alice & Theo Flight Tracker – Around the Globe</title>
+  <title>Our Love Flights – 3D Globe</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Three.js + Globe.gl -->
+  <!-- Three.js + Globe.gl (CDN) -->
   <script src="https://unpkg.com/three@0.158.0/build/three.min.js"></script>
-  <script src="https://unpkg.com/globe.gl@4.6.6/dist/globe.gl.min.js"></script>
+  <script src="https://unpkg.com/globe.gl"></script>
 
   <style>
     * {
@@ -210,8 +209,8 @@
 <body>
   <header>
     <div>
-      <h1>Alice & Theo Flight Tracker</h1>
-      <p>Every time we crossed the sky to see each other <3 </p>
+      <h1>Our Flights for Love</h1>
+      <p>A 3D globe of every time we crossed the sky to see each other 🥺✈️</p>
     </div>
   </header>
 
@@ -241,7 +240,6 @@
           <div class="subtext">Based on the flights you logged 💺</div>
         </div>
 
-        <!-- NEW CARD: total time including way home -->
         <div class="card">
           <div class="card-title">Time Including Way Home</div>
           <div class="card-value" id="total-time-returns">–</div>
@@ -264,7 +262,7 @@
       </section>
 
       <section style="margin-bottom: 1.5rem;">
-        <h2>Our Top Destinations</h2>
+        <h2>Top Destinations</h2>
         <ul id="top-destinations"></ul>
       </section>
 
@@ -276,7 +274,7 @@
   </main>
 
   <footer>
-    Made with ❤️
+    Built on a little blue marble with ✈️ and ❤️
   </footer>
 
   <script>
@@ -353,7 +351,7 @@
         totalDistance,
         hours,
         minutes,
-        totalMinutes,      // <— NEW: return total minutes
+        totalMinutes,
         herFlights,
         hisFlights,
         sortedDestinations,
@@ -363,7 +361,7 @@
 
     const stats = computeStats(flights);
 
-    // 3. Render stats in the side panel
+    // 3. Render stats
     document.getElementById("total-flights").textContent = stats.totalFlights;
 
     const flightYearsEl = document.getElementById("flight-years");
@@ -388,7 +386,6 @@
     document.getElementById("total-time").textContent =
       `${stats.hours} h ${stats.minutes} min`;
 
-    // NEW: total time including way home
     const totalMinutesReturns = stats.totalMinutes * 2;
     const hoursReturns = Math.floor(totalMinutesReturns / 60);
     const minutesReturns = totalMinutesReturns % 60;
@@ -429,8 +426,8 @@
 
     const world = Globe()
       (globeElement)
-      .globeImageUrl("//unpkg.com/three-globe/example/img/earth-dark.jpg")
-      .bumpImageUrl("//unpkg.com/three-globe/example/img/earth-topology.png")
+      .globeImageUrl("https://unpkg.com/three-globe/example/img/earth-dark.jpg")
+      .bumpImageUrl("https://unpkg.com/three-globe/example/img/earth-topology.png")
       .backgroundColor("rgba(0,0,0,0)")
       .showAtmosphere(true)
       .atmosphereColor("#38bdf8")
