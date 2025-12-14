@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Our Love Flights – 3D Globe</title>
+  <title>Alice & Theo Flight Tracker – 3D Globe</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Three.js + Globe.gl (CDN) -->
@@ -244,8 +244,8 @@
         border-top: 1px solid rgba(148, 163, 184, 0.25);
       }
       #flight-info {
-        right: 0.75rem;
         left: 0.75rem;
+        right: 0.75rem;
         max-width: none;
       }
     }
@@ -256,7 +256,7 @@
   <header>
     <div>
       <h1>Alice & Theo Flight Tracker</h1>
-      <p>Every time we crossed the sky to see each other <3</p>
+      <p>Every time we crossed the sky to see each other &lt;3</p>
     </div>
   </header>
 
@@ -330,67 +330,65 @@
     // 1. Your flight data
     const flights = [
       {
-  date: "2025-07-06",
-  from: "CPH",
-  fromName: "Copenhagen Airport",
-  fromLat: 55.6180,
-  fromLng: 12.6508,
-  to: "ARN",
-  toName: "Stockholm Arlanda Airport",
-  toLat: 59.6498,
-  toLng: 17.9237,
-  distance_km: 550,
-  duration_min: 70,
-  who: "him",
-  notes: "Theo's flight to our FIRST DATE in sthlm, pirr pirr. Risky, but worth it 💖 <br><strong>Key moments:</strong> playing house in farfar Jack's apartment, Theo's journal rescued from park bench 🚨"
-},
-{
-  date: "2025-07-13",
-  from: "CPH",
-  fromName: "Copenhagen Airport",
-  fromLat: 55.6180,
-  fromLng: 12.6508,
-  to: "AGH",
-  toName: "Torekov",
-  toLat: 56.2961,
-  toLng: 12.8449,
-  distance_km: 146,
-  duration_min: 105,
-  who: "her",
-  notes: "3rd date in Torekov! Theo picked Alice up at the train station, she met the parents, Bina served them dinner. Way to meet the family 🥂 <br><strong>Key moments:</strong> “eat the fucking challah”, smoking and teeth-brushing on the rocks, lots of ferrero rocher xx"
-},
-{
-  date: "2025-09-05",
-  from: "CPH",
-  fromName: "Copenhagen Airport",
-  fromLat: 55.6180,
-  fromLng: 12.6508,
-  to: "LIN",
-  toName: "Milan Linate Airport",
-  toLat: 45.4451,
-  toLng: 9.2767,
-  distance_km: 1159,
-  duration_min: 120,
-  who: "him",
-  notes: "First (ever!) weekend in Milan together, after long-distance texting for a month ….Did we even leave the apartment? <br><strong>Key moments:</strong> candy ring proposal, first I-luv-u, “I ❤️ jewish girls” boxers"
-},
-{
-  date: "2025-09-18",
-  from: "LIN",
-  fromName: "Milan Linate Airport",
-  fromLat: 45.4451,
-  fromLng: 9.2767,
-  to: "CPH",
-  toName: "Copenhagen Airport",
-  toLat: 55.6180,
-  toLng: 12.6508,
-  distance_km: 1165,
-  duration_min: 125,
-  who: "her",
-  notes: "Alice —✈️-→ CPH for Theo's birthday weekend 🌤 Met his friends for the first time, 10/10 bday party at Anine's. <br><strong>Key moments:</strong> luftmadrass yum xx, PRINSESSTÅRTA, WW journal gift, iconic party taco bar, homemade tiramisu, lots and lots of giggles. (secretly Alice's favorite weekend) 🎂"
-}
-
-      
+        date: "2025-07-06",
+        from: "CPH",
+        fromName: "Copenhagen Airport",
+        fromLat: 55.6180,
+        fromLng: 12.6508,
+        to: "ARN",
+        toName: "Stockholm Arlanda Airport",
+        toLat: 59.6498,
+        toLng: 17.9237,
+        distance_km: 550,
+        duration_min: 70,
+        who: "him",
+        notes: "Theo's flight to our FIRST DATE in sthlm, pirr pirr. Risky, but worth it 💖 <br><strong>Key moments:</strong> playing house in farfar Jack's apartment, Theo's journal rescued from park bench 🚨"
+      },
+      {
+        date: "2025-07-13",
+        from: "CPH",
+        fromName: "Copenhagen Airport",
+        fromLat: 55.6180,
+        fromLng: 12.6508,
+        to: "AGH",
+        toName: "Torekov",
+        toLat: 56.2961,
+        toLng: 12.8449,
+        distance_km: 146,
+        duration_min: 105,
+        who: "her",
+        notes: "3rd date in Torekov! Theo picked Alice up at the train station, she met the parents, Bina served them dinner. Way to meet the family 🥂 <br><strong>Key moments:</strong> “eat the fucking challah”, smoking and teeth-brushing on the rocks, lots of ferrero rocher xx"
+      },
+      {
+        date: "2025-09-05",
+        from: "CPH",
+        fromName: "Copenhagen Airport",
+        fromLat: 55.6180,
+        fromLng: 12.6508,
+        to: "LIN",
+        toName: "Milan Linate Airport",
+        toLat: 45.4451,
+        toLng: 9.2767,
+        distance_km: 1159,
+        duration_min: 120,
+        who: "him",
+        notes: "First (ever!) weekend in Milan together, after long-distance texting for a month ….Did we even leave the apartment? <br><strong>Key moments:</strong> candy ring proposal, first I-luv-u, “I ❤️ jewish girls” boxers"
+      },
+      {
+        date: "2025-09-18",
+        from: "LIN",
+        fromName: "Milan Linate Airport",
+        fromLat: 45.4451,
+        fromLng: 9.2767,
+        to: "CPH",
+        toName: "Copenhagen Airport",
+        toLat: 55.6180,
+        toLng: 12.6508,
+        distance_km: 1165,
+        duration_min: 125,
+        who: "her",
+        notes: "Alice —✈️→ CPH for Theo's birthday weekend 🌤 Met his friends for the first time, 10/10 bday party at Anine's. <br><strong>Key moments:</strong> luftmadrass yum xx, PRINSESSTÅRTA, WW journal gift, iconic party taco bar, homemade tiramisu, lots and lots of giggles. (secretly Alice's favorite weekend) 🎂"
+      }
       // Add more flights here…
     ];
 
@@ -414,11 +412,10 @@
         const date = new Date(f.date);
         if (!isNaN(date)) years.add(date.getFullYear());
 
-        
-          // Count ONLY arrival airports for "top destinations"
+        // Count ONLY arrival airports for "top destinations"
         if (f.toName) {
           airportCounts[f.toName] = (airportCounts[f.toName] || 0) + 1;
-        });
+        }
       });
 
       const hours = Math.floor(totalMinutes / 60);
@@ -503,26 +500,26 @@
       flightLogEl.appendChild(li);
     });
 
-    // 4. 3D globe with realistic Earth + static arcs + country outlines
+    // 4. Avoid overlapping routes: give repeated routes a small offset
+    const routeGroups = new Map();
+
+    flights.forEach(f => {
+      const key = [f.fromLat, f.fromLng, f.toLat, f.toLng].join("|");
+      if (!routeGroups.has(key)) routeGroups.set(key, []);
+      routeGroups.get(key).push(f);
+    });
+
+    routeGroups.forEach(group => {
+      const n = group.length;
+      group.forEach((f, i) => {
+        // e.g. for 3 flights => -1, 0, +1
+        f._arcOffsetIndex = i - (n - 1) / 2;
+      });
+    });
+
+    // 5. 3D globe with realistic Earth + static arcs + country outlines
     const globeElement = document.getElementById("globeViz");
     const infoPanel = document.getElementById("flight-info");
-
-    // 🔹 Give repeated routes a small offset so they don't sit exactly on top of each other
-const routeGroups = new Map();
-
-flights.forEach(f => {
-  const key = [f.fromLat, f.fromLng, f.toLat, f.toLng].join("|");
-  if (!routeGroups.has(key)) routeGroups.set(key, []);
-  routeGroups.get(key).push(f);
-});
-
-routeGroups.forEach(group => {
-  const n = group.length;
-  group.forEach((f, i) => {
-    // Center around 0: e.g. for 3 flights => -1, 0, +1
-    f._arcOffsetIndex = i - (n - 1) / 2;
-  });
-});
 
     const world = Globe()
       (globeElement)
@@ -538,14 +535,18 @@ routeGroups.forEach(group => {
       .arcStartLng(d => d.fromLng)
       .arcEndLat(d => d.toLat)
       .arcEndLng(d => d.toLng)
-      ..arcAltitude(d => 0.2 + (d._arcOffsetIndex || 0) * 0.04)
+      .arcAltitude(d => 0.2 + (d._arcOffsetIndex || 0) * 0.04)
       .arcStroke(0.8)
       .arcsTransitionDuration(0)
       .arcColor(d => d.who === "her" ? "#c084fc" : "#60a5fa")
       // click handler to show info bubble
       .onArcClick(f => {
         if (!f) return;
-        const whoLabel = f.who === "her" ? "Her flight" : f.who === "him" ? "His flight" : "Our flight";
+        const whoLabel = f.who === "her"
+          ? "Her flight"
+          : f.who === "him"
+          ? "His flight"
+          : "Our flight";
 
         infoPanel.style.display = "block";
         infoPanel.innerHTML = `
@@ -583,9 +584,8 @@ routeGroups.forEach(group => {
     controls.dampingFactor = 0.05;
 
     // These values control how close/far you can zoom.
-    // Adjust if you want it a bit looser/tighter.
-    controls.minDistance = 180;   // don't let camera get *too* close
-    controls.maxDistance = 380;   // don't let camera get absurdly far
+    controls.minDistance = 180;   // don't let camera get too close
+    controls.maxDistance = 380;   // don't let camera get too far
   </script>
 </body>
 </html>
