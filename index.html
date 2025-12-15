@@ -357,7 +357,7 @@
         distance_km: 146,
         duration_min: 105,
         who: "her",
-        notes: "3rd date in Torekov! Theo picked Alice up at the train station, she met the parents, Bina served them dinner. Way to meet the family 🥂 <br><strong>Key moments:</strong> “eat the fucking challah”, smoking and teeth-brushing on the rocks, lots of ferrero rocher xx"
+        notes: "3rd date in Torekov<br> Theo picked Alice up at the train station, she met the parents, Bina served them dinner. Way to meet the family 🥂 <br><strong>Key moments:</strong> “eat the fucking challah”, smoking and teeth-brushing on the rocks, lots of ferrero rocher xx"
       },
       {
         date: "2025-09-05",
@@ -387,10 +387,21 @@
         distance_km: 1165,
         duration_min: 125,
         who: "her",
-        notes: "Alice —✈️→ CPH for Theo's birthday weekend 🌤 Met his friends for the first time, 10/10 bday party at Anine's. <br><strong>Key moments:</strong> luftmadrass yum xx, PRINSESSTÅRTA, WW journal gift, iconic party taco bar, homemade tiramisu, lots and lots of giggles. (secretly Alice's favorite weekend) 🎂"
+        notes: "Alice —✈️→ CPH for Theo's birthday weekend 🌤 Met his friends for the first time, 10/10 bday party at Anine's. <br><strong>Key moments:</strong> luftmadrass yum, PRINSESSTÅRTA, WW journal gift, homemade tiramisu, giggles 🎂"
       }
       // Add more flights here…
     ];
+
+    // 1b. Assign chronological flight numbers (chapters)
+    const flightsSortedByDate = [...flights].sort((a, b) => {
+      const da = new Date(a.date);
+      const db = new Date(b.date);
+      return da - db;
+    });
+
+    flightsSortedByDate.forEach((f, idx) => {
+      f._flightNumber = idx + 1; // Flight #1, #2, ...
+    });
 
     // 2. Compute stats
     function computeStats(flights) {
@@ -483,24 +494,19 @@
     });
 
     const flightLogEl = document.getElementById("flight-log");
-    const sortedFlights = [...flights].sort((a, b) => {
-      const da = new Date(a.date);
-      const db = new Date(b.date);
-      return da - db;
-    });
-
-    sortedFlights.forEach(f => {
+    flightLogEl.innerHTML = "";
+    flightsSortedByDate.forEach(f => {
       const li = document.createElement("li");
       const whoLabel = f.who === "her" ? "her flight" : f.who === "him" ? "his flight" : "both";
       li.innerHTML = `
-        <div class="flight-log-date">${f.date}</div>
+        <div class="flight-log-date">#${f._flightNumber} · ${f.date}</div>
         <div class="flight-log-route">${f.from} → ${f.to} (${whoLabel})</div>
         <div class="flight-log-notes">${f.notes ? f.notes : "No notes yet"}</div>
       `;
       flightLogEl.appendChild(li);
     });
 
-    // 4. Avoid overlapping routes: give repeated routes a small offset
+    // 4. Avoid overlapping routes: give repeated routes a more pronounced offset
     const routeGroups = new Map();
 
     flights.forEach(f => {
@@ -512,12 +518,12 @@
     routeGroups.forEach(group => {
       const n = group.length;
       group.forEach((f, i) => {
-        // e.g. for 3 flights => -1, 0, +1
+        // for 2 flights: -0.5, +0.5; for 3 flights: -1, 0, +1, etc.
         f._arcOffsetIndex = i - (n - 1) / 2;
       });
     });
 
-    // 5. 3D globe with realistic Earth + static arcs + country outlines
+    // 5. 3D globe with realistic Earth + static arcs + clearer offsets + country outlines
     const globeElement = document.getElementById("globeViz");
     const infoPanel = document.getElementById("flight-info");
 
@@ -535,8 +541,8 @@
       .arcStartLng(d => d.fromLng)
       .arcEndLat(d => d.toLat)
       .arcEndLng(d => d.toLng)
-      .arcAltitude(d => 0.2 + (d._arcOffsetIndex || 0) * 0.04)
-      .arcStroke(0.8)
+      .arcAltitude(d => 0.25 + (d._arcOffsetIndex || 0) * 0.12)  // more pronounced separation
+      .arcStroke(1.1)
       .arcsTransitionDuration(0)
       .arcColor(d => d.who === "her" ? "#c084fc" : "#60a5fa")
       // click handler to show info bubble
@@ -547,10 +553,11 @@
           : f.who === "him"
           ? "His flight"
           : "Our flight";
+        const numText = f._flightNumber ? `Flight #${f._flightNumber} · ` : "";
 
         infoPanel.style.display = "block";
         infoPanel.innerHTML = `
-          <div class="label">${whoLabel}</div>
+          <div class="label">${numText}${whoLabel}</div>
           <h3>${f.fromName} → ${f.toName}</h3>
           <p><strong>Date:</strong> ${f.date}</p>
           <p><strong>Distance:</strong> ${f.distance_km.toLocaleString()} km</p>
