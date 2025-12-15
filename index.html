@@ -328,10 +328,6 @@
 
   <script>
     // 1. Flight data
-    // You can add joint trips by adding two entries with:
-    // - same date
-    // - same toCity
-    // (her route + his route) → they'll be treated as ONE trip.
     const flights = [
       {
         date: "2025-07-06",
@@ -365,7 +361,7 @@
         distance_km: 146,
         duration_min: 105,
         who: "her",
-        notes: "3rd date in Torekov 💜<br> Theo picked Alice up at the train station, she met the parents, Bina served them dinner. Way to meet the family 🥂 <br><strong>Key moments:</strong> “eat the fucking challah”, smoking and teeth-brushing on the rocks, lots of ferrero rocher xx"
+        notes: "3rd date in Torekov 💜<br>Theo picked Alice up at the train station, she met the parents, Bina served them dinner. Way to meet the family 🥂 <br><strong>Key moments:</strong> “eat the fucking challah”, smoking and teeth-brushing on the rocks, lots of ferrero rocher xx"
       },
       {
         date: "2025-09-05",
@@ -400,123 +396,92 @@
         duration_min: 125,
         who: "her",
         notes: "Alice —✈️→ CPH for Theo's birthday weekend 🌤 10/10 bday party at Anine's. <br><strong>Key moments:</strong> luftmadrass yum, PRINSESSTÅRTA, WW journal gift, homemade tiramisu, giggles 🎂"
-      }
+      },
       {
-  date: "2025-10-03",
-  fromCity: "Copenhagen",
-  from: "CPH",
-  fromName: "Copenhagen Airport",
-  fromLat: 55.6180,
-  fromLng: 12.6508,
-
-  toCity: "Milan",
-  to: "LIN",
-  toName: "Milan Linate Airport",
-  toLat: 45.4451,
-  toLng: 9.2767,
-
-  distance_km: 1159,
-  duration_min: 120,
-  who: "him",
-  notes: "Milan weekend #2: we danced at a vinyl bar, walked along the Navigli canals, and had movie nights. <br><strong>Key moments:</strong> Espresso doppio x1000, disposable camera competition, osteria \"nice sack\" 🍷"
-},
-{
-  date: "2025-10-24",
-  fromCity: "Copenhagen",
-  from: "CPH",
-  fromName: "Copenhagen Airport",
-  fromLat: 55.6180,
-  fromLng: 12.6508,
-
-  toCity: "Milan",
-  to: "LIN",
-  toName: "Milan Linate Airport",
-  toLat: 45.4451,
-  toLng: 9.2767,
-
-  distance_km: 1159,
-  duration_min: 120,
-  who: "him",
-  notes: "Theo —✈️→ Milan for Alice's birthday weekend 💘 Day trip to truffle festival + Barolo wine tasting <br><strong>Key moments:</strong> STUDSGATAN 2, WW car rap, Theo's first pro haircut ✂️"
-},
-{
-  date: "2025-11-14",
-  fromCity: "Milan",
-  from: "LIN",
-  fromName: "Milan Linate Airport",
-  fromLat: 45.4451,
-  fromLng: 9.2767,
-
-  toCity: "Copenhagen",
-  to: "CPH",
-  toName: "Copenhagen Airport",
-  toLat: 55.6180,
-  toLng: 12.6508,
-
-  distance_km: 1165,
-  duration_min: 125,
-  who: "her",
-  notes: "Cph + Lund weekend 🩵<br>Cocktail lunch to saunagus to Tivoli 🎡 <br><strong>Key moments:</strong> \"Alice Weil's idiot\" sign, scrapbooking, Frankenstein, daddlar i choklad 🍹"
-},
-{
-  date: "2025-12-05",
-  fromCity: "Copenhagen",
-  from: "CPH",
-  fromName: "Copenhagen Airport",
-  fromLat: 55.6180,
-  fromLng: 12.6508,
-
-  toCity: "Stockholm",
-  to: "ARN",
-  toName: "Stockholm Arlanda Airport",
-  toLat: 59.6498,
-  toLng: 17.9237,
-
-  distance_km: 550,
-  duration_min: 70,
-  who: "him",
-  notes: "JUL TAKEOVER 🎄<br>Mys, film, glögg, mer mys<br><strong>Key moments:</strong> Family time, julbord, wig and nothing else 💋"
-},
-{
-  date: "2025-12-05",
-  fromCity: "Milan",
-  from: "LIN",
-  fromName: "Milan Linate Airport",
-  fromLat: 45.4451,
-  fromLng: 9.2767,
-
-  toCity: "Stockholm",
-  to: "ARN",
-  toName: "Stockholm Arlanda Airport",
-  toLat: 59.6498,
-  toLng: 17.9237,
-
-  distance_km: 1680,
-  duration_min: 165,
-  who: "her",
-  notes: "JUL TAKEOVER 🎄<br>Mys, film, glögg, mer mys<br><strong>Key moments:</strong> Family time, julbord, wig and nothing else 💋"
-}
-      // Example of a JOINT TRIP (you can add later):
-      // {
-      //   date: "2025-10-10",
-      //   fromCity: "Copenhagen",
-      //   from: "CPH",
-      //   ...,
-      //   toCity: "Paris",
-      //   ...
-      //   who: "her",
-      //   notes: "Joint trip to Paris..."
-      // },
-      // {
-      //   date: "2025-10-10",
-      //   fromCity: "Milan",
-      //   from: "LIN",
-      //   ...,
-      //   toCity: "Paris",
-      //   ...
-      //   who: "him",
-      //   notes: "Joint trip to Paris..." // same notes
-      // }
+        date: "2025-10-03",
+        fromCity: "Copenhagen",
+        from: "CPH",
+        fromName: "Copenhagen Airport",
+        fromLat: 55.6180,
+        fromLng: 12.6508,
+        toCity: "Milan",
+        to: "LIN",
+        toName: "Milan Linate Airport",
+        toLat: 45.4451,
+        toLng: 9.2767,
+        distance_km: 1159,
+        duration_min: 120,
+        who: "him",
+        notes: "Milan weekend #2: we danced at a vinyl bar, walked along the Navigli canals, and had movie nights. <br><strong>Key moments:</strong> Espresso doppio x1000, disposable camera competition, osteria \"nice sack\" 🍷"
+      },
+      {
+        date: "2025-10-24",
+        fromCity: "Copenhagen",
+        from: "CPH",
+        fromName: "Copenhagen Airport",
+        fromLat: 55.6180,
+        fromLng: 12.6508,
+        toCity: "Milan",
+        to: "LIN",
+        toName: "Milan Linate Airport",
+        toLat: 45.4451,
+        toLng: 9.2767,
+        distance_km: 1159,
+        duration_min: 120,
+        who: "him",
+        notes: "Theo —✈️→ Milan for Alice's birthday weekend 💘 Day trip to truffle festival + Barolo wine tasting <br><strong>Key moments:</strong> STUDSGATAN 2, WW car rap, Theo's first pro haircut ✂️"
+      },
+      {
+        date: "2025-11-14",
+        fromCity: "Milan",
+        from: "LIN",
+        fromName: "Milan Linate Airport",
+        fromLat: 45.4451,
+        fromLng: 9.2767,
+        toCity: "Copenhagen",
+        to: "CPH",
+        toName: "Copenhagen Airport",
+        toLat: 55.6180,
+        toLng: 12.6508,
+        distance_km: 1165,
+        duration_min: 125,
+        who: "her",
+        notes: "Cph + Lund weekend 🩵<br>Cocktail lunch to saunagus to Tivoli 🎡 <br><strong>Key moments:</strong> \"Alice Weil's idiot\" sign, scrapbooking, Frankenstein, daddlar i choklad 🍹"
+      },
+      {
+        date: "2025-12-05",
+        fromCity: "Copenhagen",
+        from: "CPH",
+        fromName: "Copenhagen Airport",
+        fromLat: 55.6180,
+        fromLng: 12.6508,
+        toCity: "Stockholm",
+        to: "ARN",
+        toName: "Stockholm Arlanda Airport",
+        toLat: 59.6498,
+        toLng: 17.9237,
+        distance_km: 550,
+        duration_min: 70,
+        who: "him",
+        notes: "JUL TAKEOVER 🎄<br>Mys, film, glögg, mer mys<br><strong>Key moments:</strong> Family time, julbord, wig and nothing else 💋"
+      },
+      {
+        date: "2025-12-05",
+        fromCity: "Milan",
+        from: "LIN",
+        fromName: "Milan Linate Airport",
+        fromLat: 45.4451,
+        fromLng: 9.2767,
+        toCity: "Stockholm",
+        to: "ARN",
+        toName: "Stockholm Arlanda Airport",
+        toLat: 59.6498,
+        toLng: 17.9237,
+        distance_km: 1680,
+        duration_min: 165,
+        who: "her",
+        notes: "JUL TAKEOVER 🎄<br>Mys, film, glögg, mer mys<br><strong>Key moments:</strong> Family time, julbord, wig and nothing else 💋"
+      }
     ];
 
     // Helper: trip key = same date + same arrival city → same trip
