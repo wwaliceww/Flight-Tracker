@@ -59,7 +59,7 @@
     #globe-container {
       position: relative;
       min-height: 70vh;
-      overflow: hidden; /* prevent globe from visually spilling over */
+      overflow: hidden;
     }
 
     #globeViz {
@@ -93,17 +93,17 @@
       padding: 0.9rem 1rem;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
       z-index: 6;
-      display: none; /* hidden until a flight is clicked */
+      display: none;
     }
 
     #flight-info h3 {
       margin: 0 0 0.35rem;
-      font-size: 1rem; /* slightly larger */
+      font-size: 1rem;
     }
 
     #flight-info p {
       margin: 0.1rem 0;
-      font-size: 0.9rem; /* larger than the rest of the UI */
+      font-size: 0.9rem;
       line-height: 1.35;
     }
 
@@ -286,7 +286,7 @@
         <div class="card">
           <div class="card-title">Time in the Air</div>
           <div class="card-value" id="total-time">–</div>
-          <div class="subtext">Based on the flights you logged 💺</div>
+          <div class="subtext">Based on all flight legs 💺</div>
         </div>
 
         <div class="card">
@@ -311,7 +311,7 @@
       </section>
 
       <section style="margin-bottom: 1.5rem;">
-        <h2>Our Top Destinations</h2>
+        <h2>Top Destinations</h2>
         <ul id="top-destinations"></ul>
       </section>
 
@@ -327,16 +327,21 @@
   </footer>
 
   <script>
-    // 1. Your flight data
+    // 1. Flight data
+    // You can add joint trips by adding two entries with:
+    // - same date
+    // - same toCity
+    // (her route + his route) → they'll be treated as ONE trip.
     const flights = [
       {
         date: "2025-07-06",
+        fromCity: "Copenhagen",
         from: "CPH",
         fromName: "Copenhagen Airport",
         fromLat: 55.6180,
         fromLng: 12.6508,
-        to: "ARN",
         toCity: "Stockholm",
+        to: "ARN",
         toName: "Stockholm Arlanda Airport",
         toLat: 59.6498,
         toLng: 17.9237,
@@ -347,12 +352,13 @@
       },
       {
         date: "2025-07-13",
+        fromCity: "Copenhagen",
         from: "CPH",
         fromName: "Copenhagen Airport",
         fromLat: 55.6180,
         fromLng: 12.6508,
-        to: "AGH",
         toCity: "Torekov",
+        to: "AGH",
         toName: "Torekov",
         toLat: 56.2961,
         toLng: 12.8449,
@@ -363,12 +369,13 @@
       },
       {
         date: "2025-09-05",
+        fromCity: "Copenhagen",
         from: "CPH",
         fromName: "Copenhagen Airport",
         fromLat: 55.6180,
         fromLng: 12.6508,
-        to: "LIN",
         toCity: "Milan",
+        to: "LIN",
         toName: "Milan Linate Airport",
         toLat: 45.4451,
         toLng: 9.2767,
@@ -379,12 +386,13 @@
       },
       {
         date: "2025-09-18",
+        fromCity: "Milan",
         from: "LIN",
         fromName: "Milan Linate Airport",
         fromLat: 45.4451,
         fromLng: 9.2767,
-        to: "CPH",
         toCity: "Copenhagen",
+        to: "CPH",
         toName: "Copenhagen Airport",
         toLat: 55.6180,
         toLng: 12.6508,
@@ -393,71 +401,213 @@
         who: "her",
         notes: "Alice —✈️→ CPH for Theo's birthday weekend 🌤 10/10 bday party at Anine's. <br><strong>Key moments:</strong> luftmadrass yum, PRINSESSTÅRTA, WW journal gift, homemade tiramisu, giggles 🎂"
       }
-      // Add more flights here…
+      {
+  date: "2025-10-03",
+  fromCity: "Copenhagen",
+  from: "CPH",
+  fromName: "Copenhagen Airport",
+  fromLat: 55.6180,
+  fromLng: 12.6508,
+
+  toCity: "Milan",
+  to: "LIN",
+  toName: "Milan Linate Airport",
+  toLat: 45.4451,
+  toLng: 9.2767,
+
+  distance_km: 1159,
+  duration_min: 120,
+  who: "him",
+  notes: "Milan weekend #2: we danced at a vinyl bar, walked along the Navigli canals, and had movie nights. <br><strong>Key moments:</strong> Espresso doppio x1000, disposable camera competition, osteria \"nice sack\" 🍷"
+},
+{
+  date: "2025-10-24",
+  fromCity: "Copenhagen",
+  from: "CPH",
+  fromName: "Copenhagen Airport",
+  fromLat: 55.6180,
+  fromLng: 12.6508,
+
+  toCity: "Milan",
+  to: "LIN",
+  toName: "Milan Linate Airport",
+  toLat: 45.4451,
+  toLng: 9.2767,
+
+  distance_km: 1159,
+  duration_min: 120,
+  who: "him",
+  notes: "Theo —✈️→ Milan for Alice's birthday weekend 💘 Day trip to truffle festival + Barolo wine tasting <br><strong>Key moments:</strong> STUDSGATAN 2, WW car rap, Theo's first pro haircut ✂️"
+},
+{
+  date: "2025-11-14",
+  fromCity: "Milan",
+  from: "LIN",
+  fromName: "Milan Linate Airport",
+  fromLat: 45.4451,
+  fromLng: 9.2767,
+
+  toCity: "Copenhagen",
+  to: "CPH",
+  toName: "Copenhagen Airport",
+  toLat: 55.6180,
+  toLng: 12.6508,
+
+  distance_km: 1165,
+  duration_min: 125,
+  who: "her",
+  notes: "Cph + Lund weekend 🩵<br>Cocktail lunch to saunagus to Tivoli 🎡 <br><strong>Key moments:</strong> \"Alice Weil's idiot\" sign, scrapbooking, Frankenstein, daddlar i choklad 🍹"
+},
+{
+  date: "2025-12-05",
+  fromCity: "Copenhagen",
+  from: "CPH",
+  fromName: "Copenhagen Airport",
+  fromLat: 55.6180,
+  fromLng: 12.6508,
+
+  toCity: "Stockholm",
+  to: "ARN",
+  toName: "Stockholm Arlanda Airport",
+  toLat: 59.6498,
+  toLng: 17.9237,
+
+  distance_km: 550,
+  duration_min: 70,
+  who: "him",
+  notes: "JUL TAKEOVER 🎄<br>Mys, film, glögg, mer mys<br><strong>Key moments:</strong> Family time, julbord, wig and nothing else 💋"
+},
+{
+  date: "2025-12-05",
+  fromCity: "Milan",
+  from: "LIN",
+  fromName: "Milan Linate Airport",
+  fromLat: 45.4451,
+  fromLng: 9.2767,
+
+  toCity: "Stockholm",
+  to: "ARN",
+  toName: "Stockholm Arlanda Airport",
+  toLat: 59.6498,
+  toLng: 17.9237,
+
+  distance_km: 1680,
+  duration_min: 165,
+  who: "her",
+  notes: "JUL TAKEOVER 🎄<br>Mys, film, glögg, mer mys<br><strong>Key moments:</strong> Family time, julbord, wig and nothing else 💋"
+}
+      // Example of a JOINT TRIP (you can add later):
+      // {
+      //   date: "2025-10-10",
+      //   fromCity: "Copenhagen",
+      //   from: "CPH",
+      //   ...,
+      //   toCity: "Paris",
+      //   ...
+      //   who: "her",
+      //   notes: "Joint trip to Paris..."
+      // },
+      // {
+      //   date: "2025-10-10",
+      //   fromCity: "Milan",
+      //   from: "LIN",
+      //   ...,
+      //   toCity: "Paris",
+      //   ...
+      //   who: "him",
+      //   notes: "Joint trip to Paris..." // same notes
+      // }
     ];
 
-    // 1b. Assign chronological flight numbers (chapters)
-    const flightsSortedByDate = [...flights].sort((a, b) => {
-      const da = new Date(a.date);
-      const db = new Date(b.date);
+    // Helper: trip key = same date + same arrival city → same trip
+    function getTripKey(f) {
+      return `${f.date}::${f.toCity || f.toName || f.to}`;
+    }
+
+    // Group flights into trips
+    const tripGroupsMap = new Map();
+    flights.forEach(f => {
+      const key = getTripKey(f);
+      if (!tripGroupsMap.has(key)) tripGroupsMap.set(key, []);
+      tripGroupsMap.get(key).push(f);
+      f._tripKey = key;
+    });
+
+    const tripGroups = Array.from(tripGroupsMap.values());
+
+    // Sort trips chronologically (by first flight's date) and assign trip numbers
+    tripGroups.sort((a, b) => {
+      const da = new Date(a[0].date);
+      const db = new Date(b[0].date);
       return da - db;
     });
 
-    flightsSortedByDate.forEach((f, idx) => {
-      f._flightNumber = idx + 1; // Flight #1, #2, ...
+    tripGroups.forEach((group, idx) => {
+      const tripNumber = idx + 1;
+      group.forEach(f => {
+        f._tripNumber = tripNumber; // same number for both her & his legs on a joint trip
+      });
     });
 
-    // 2. Compute stats
-    function computeStats(flights) {
-      const totalFlights = flights.length;
+    // 2. Compute stats based on trips + legs
+    function computeStats(flights, tripGroups) {
+      const totalLegs = flights.length;
       let totalDistance = 0;
       let totalMinutes = 0;
-      const airportCounts = {};
+      const destinationCounts = {};
       const years = new Set();
-      let herFlights = 0;
-      let hisFlights = 0;
+
+      const herTripKeys = new Set();
+      const hisTripKeys = new Set();
 
       flights.forEach(f => {
         totalDistance += f.distance_km || 0;
         totalMinutes += f.duration_min || 0;
 
-        if (f.who === "her") herFlights++;
-        if (f.who === "him") hisFlights++;
-
         const date = new Date(f.date);
         if (!isNaN(date)) years.add(date.getFullYear());
 
-        // Extract city name only (not airport)
-if (f.toCity) {
-  airportCounts[f.toCity] = (airportCounts[f.toCity] || 0) + 1;
-}
+        const tripKey = f._tripKey || getTripKey(f);
 
+        if (f.who === "her") {
+          herTripKeys.add(tripKey);
+        }
+        if (f.who === "him") {
+          hisTripKeys.add(tripKey);
+        }
+
+        // Top destinations ONLY use arrival city
+        const city = f.toCity || f.toName || f.to;
+        if (city) {
+          destinationCounts[city] = (destinationCounts[city] || 0) + 1;
+        }
       });
 
       const hours = Math.floor(totalMinutes / 60);
       const minutes = totalMinutes % 60;
 
-      const sortedDestinations = Object.entries(airportCounts)
+      const sortedDestinations = Object.entries(destinationCounts)
         .sort((a, b) => b[1] - a[1])
         .slice(0, 5);
 
       return {
-        totalFlights,
+        totalTrips: tripGroups.length,   // joint trip counts as 1
+        totalLegs,
         totalDistance,
         hours,
         minutes,
         totalMinutes,
-        herFlights,
-        hisFlights,
+        herTrips: herTripKeys.size,
+        hisTrips: hisTripKeys.size,
         sortedDestinations,
         years: Array.from(years).sort()
       };
     }
 
-    const stats = computeStats(flights);
+    const stats = computeStats(flights, tripGroups);
 
     // 3. Render stats
-    document.getElementById("total-flights").textContent = stats.totalFlights;
+    document.getElementById("total-flights").textContent = stats.totalTrips;
 
     const flightYearsEl = document.getElementById("flight-years");
     if (stats.years.length === 1) {
@@ -488,32 +638,44 @@ if (f.toCity) {
       `${hoursReturns} h ${minutesReturns} min`;
 
     document.getElementById("her-his-flights").textContent =
-      `Her: ${stats.herFlights} · Him: ${stats.hisFlights}`;
+      `Her: ${stats.herTrips} · Him: ${stats.hisTrips}`;
 
     const topDestinationsEl = document.getElementById("top-destinations");
     topDestinationsEl.innerHTML = "";
     stats.sortedDestinations.forEach(([city, count]) => {
-  const li = document.createElement("li");
-  li.innerHTML = `<strong>${city}</strong>: ${count} flights`;
-  topDestinationsEl.appendChild(li);
+      const li = document.createElement("li");
+      li.innerHTML = `<strong>${city}</strong>: ${count} flights`;
+      topDestinationsEl.appendChild(li);
     });
 
+    // Flight log: one row per TRIP ("chapter")
     const flightLogEl = document.getElementById("flight-log");
     flightLogEl.innerHTML = "";
-    flightsSortedByDate.forEach(f => {
+    tripGroups.forEach(group => {
+      const main = group[0];
+      const isJoint = group.length > 1;
+      const tripNumber = main._tripNumber;
+      const whoLabel = isJoint
+        ? "joint trip (both flew)"
+        : main.who === "her"
+        ? "her flight"
+        : "his flight";
+
+      const routesText = isJoint
+        ? group.map(f => `${f.fromCity || f.fromName} → ${f.toCity || f.toName} (${f.who})`).join(" & ")
+        : `${main.fromCity || main.fromName} → ${main.toCity || main.toName} (${main.who})`;
+
       const li = document.createElement("li");
-      const whoLabel = f.who === "her" ? "her flight" : f.who === "him" ? "his flight" : "both";
       li.innerHTML = `
-        <div class="flight-log-date">#${f._flightNumber} · ${f.date}</div>
-        <div class="flight-log-route">${f.from} → ${f.to} (${whoLabel})</div>
-        <div class="flight-log-notes">${f.notes ? f.notes : "No notes yet"}</div>
+        <div class="flight-log-date">#${tripNumber} · ${main.date}</div>
+        <div class="flight-log-route">${routesText} · ${whoLabel}</div>
+        <div class="flight-log-notes">${main.notes || "No notes yet"}</div>
       `;
       flightLogEl.appendChild(li);
     });
 
     // 4. Avoid overlapping routes: give repeated routes a more pronounced offset
     const routeGroups = new Map();
-
     flights.forEach(f => {
       const key = [f.fromLat, f.fromLng, f.toLat, f.toLng].join("|");
       if (!routeGroups.has(key)) routeGroups.set(key, []);
@@ -523,8 +685,7 @@ if (f.toCity) {
     routeGroups.forEach(group => {
       const n = group.length;
       group.forEach((f, i) => {
-        // for 2 flights: -0.5, +0.5; for 3 flights: -1, 0, +1, etc.
-        f._arcOffsetIndex = i - (n - 1) / 2;
+        f._arcOffsetIndex = i - (n - 1) / 2; // -1, 0, +1, ...
       });
     });
 
@@ -534,41 +695,56 @@ if (f.toCity) {
 
     const world = Globe()
       (globeElement)
-      // realistic textures
       .globeImageUrl("https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg")
       .bumpImageUrl("https://unpkg.com/three-globe/example/img/earth-topology.png")
       .backgroundColor("rgba(0,0,0,0)")
       .showAtmosphere(true)
       .atmosphereColor("#a5b4fc")
       .atmosphereAltitude(0.18)
-      // static arcs
       .arcStartLat(d => d.fromLat)
       .arcStartLng(d => d.fromLng)
       .arcEndLat(d => d.toLat)
       .arcEndLng(d => d.toLng)
-      .arcAltitude(d => 0.25 + (d._arcOffsetIndex || 0) * 0.12)  // more pronounced separation
+      .arcAltitude(d => 0.25 + (d._arcOffsetIndex || 0) * 0.14)  // more pronounced separation
       .arcStroke(1.1)
       .arcsTransitionDuration(0)
       .arcColor(d => d.who === "her" ? "#c084fc" : "#60a5fa")
-      // click handler to show info bubble
       .onArcClick(f => {
         if (!f) return;
-        const whoLabel = f.who === "her"
+        const tripKey = f._tripKey || getTripKey(f);
+        const group = tripGroupsMap.get(tripKey) || [f];
+        const main = group[0];
+        const isJoint = group.length > 1;
+
+        const whoLabel = isJoint
+          ? "Joint trip – both flew"
+          : f.who === "her"
           ? "Her flight"
-          : f.who === "him"
-          ? "His flight"
-          : "Our flight";
-        const numText = f._flightNumber ? `Flight #${f._flightNumber} · ` : "";
+          : "His flight";
+
+        const tripNumber = main._tripNumber;
+        const numText = tripNumber ? `Flight #${tripNumber} · ` : "";
+
+        const routesListHtml = group
+          .map(leg => {
+            const who = leg.who === "her" ? "her" : "him";
+            const from = leg.fromCity || leg.fromName;
+            const to = leg.toCity || leg.toName;
+            return `${from} → ${to} (${who})`;
+          })
+          .join("<br>");
+
+        const notesHtml = main.notes ? main.notes : "No notes for this trip yet.";
 
         infoPanel.style.display = "block";
         infoPanel.innerHTML = `
           <div class="label">${numText}${whoLabel}</div>
-          <h3>${f.fromName} → ${f.toName}</h3>
-          <p><strong>Date:</strong> ${f.date}</p>
-          <p><strong>Distance:</strong> ${f.distance_km.toLocaleString()} km</p>
-          <p><strong>Time in air:</strong> ${Math.round(f.duration_min / 60)} h ${f.duration_min % 60} min</p>
-          <p><strong>Route code:</strong> ${f.from} → ${f.to}</p>
-          <p class="notes">${f.notes ? f.notes : "No notes for this flight yet."}</p>
+          <h3>${main.toCity || main.toName}</h3>
+          <p><strong>Date:</strong> ${main.date}</p>
+          <p><strong>Routes:</strong><br>${routesListHtml}</p>
+          <p><strong>Distance (this leg):</strong> ${f.distance_km.toLocaleString()} km</p>
+          <p><strong>Time in air (this leg):</strong> ${Math.round(f.duration_min / 60)} h ${f.duration_min % 60} min</p>
+          <p class="notes">${notesHtml}</p>
         `;
       });
 
@@ -589,15 +765,13 @@ if (f.toCity) {
     // Camera: initial view (no auto-rotate)
     world.pointOfView({ lat: 25, lng: 5, altitude: 2.1 }, 0);
 
-    // Controls: no auto-rotate + zoom limits so globe stays reasonable
+    // Controls: no auto-rotate + zoom limits
     const controls = world.controls();
-    controls.autoRotate = false;          // stop spinning on its own
+    controls.autoRotate = false;
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
-
-    // These values control how close/far you can zoom.
-    controls.minDistance = 180;   // don't let camera get too close
-    controls.maxDistance = 380;   // don't let camera get too far
+    controls.minDistance = 180;
+    controls.maxDistance = 380;
   </script>
 </body>
 </html>
