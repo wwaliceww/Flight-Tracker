@@ -311,7 +311,7 @@
       </section>
 
       <section style="margin-bottom: 1.5rem;">
-        <h2>Top Destinations</h2>
+        <h2>Our Top Destinations</h2>
         <ul id="top-destinations"></ul>
       </section>
 
@@ -336,6 +336,7 @@
         fromLat: 55.6180,
         fromLng: 12.6508,
         to: "ARN",
+        toCity: "Stockholm",
         toName: "Stockholm Arlanda Airport",
         toLat: 59.6498,
         toLng: 17.9237,
@@ -351,13 +352,14 @@
         fromLat: 55.6180,
         fromLng: 12.6508,
         to: "AGH",
+        toCity: "Torekov",
         toName: "Torekov",
         toLat: 56.2961,
         toLng: 12.8449,
         distance_km: 146,
         duration_min: 105,
         who: "her",
-        notes: "3rd date in Torekov<br> Theo picked Alice up at the train station, she met the parents, Bina served them dinner. Way to meet the family 🥂 <br><strong>Key moments:</strong> “eat the fucking challah”, smoking and teeth-brushing on the rocks, lots of ferrero rocher xx"
+        notes: "3rd date in Torekov 💜<br> Theo picked Alice up at the train station, she met the parents, Bina served them dinner. Way to meet the family 🥂 <br><strong>Key moments:</strong> “eat the fucking challah”, smoking and teeth-brushing on the rocks, lots of ferrero rocher xx"
       },
       {
         date: "2025-09-05",
@@ -366,6 +368,7 @@
         fromLat: 55.6180,
         fromLng: 12.6508,
         to: "LIN",
+        toCity: "Milan",
         toName: "Milan Linate Airport",
         toLat: 45.4451,
         toLng: 9.2767,
@@ -381,13 +384,14 @@
         fromLat: 45.4451,
         fromLng: 9.2767,
         to: "CPH",
+        toCity: "Copenhagen",
         toName: "Copenhagen Airport",
         toLat: 55.6180,
         toLng: 12.6508,
         distance_km: 1165,
         duration_min: 125,
         who: "her",
-        notes: "Alice —✈️→ CPH for Theo's birthday weekend 🌤 Met his friends for the first time, 10/10 bday party at Anine's. <br><strong>Key moments:</strong> luftmadrass yum, PRINSESSTÅRTA, WW journal gift, homemade tiramisu, giggles 🎂"
+        notes: "Alice —✈️→ CPH for Theo's birthday weekend 🌤 10/10 bday party at Anine's. <br><strong>Key moments:</strong> luftmadrass yum, PRINSESSTÅRTA, WW journal gift, homemade tiramisu, giggles 🎂"
       }
       // Add more flights here…
     ];
@@ -423,10 +427,11 @@
         const date = new Date(f.date);
         if (!isNaN(date)) years.add(date.getFullYear());
 
-        // Count ONLY arrival airports for "top destinations"
-        if (f.toName) {
-          airportCounts[f.toName] = (airportCounts[f.toName] || 0) + 1;
-        }
+        // Extract city name only (not airport)
+if (f.toCity) {
+  airportCounts[f.toCity] = (airportCounts[f.toCity] || 0) + 1;
+}
+
       });
 
       const hours = Math.floor(totalMinutes / 60);
@@ -487,10 +492,10 @@
 
     const topDestinationsEl = document.getElementById("top-destinations");
     topDestinationsEl.innerHTML = "";
-    stats.sortedDestinations.forEach(([name, count]) => {
-      const li = document.createElement("li");
-      li.textContent = `${name}: ${count} flights`;
-      topDestinationsEl.appendChild(li);
+    stats.sortedDestinations.forEach(([city, count]) => {
+  const li = document.createElement("li");
+  li.innerHTML = `<strong>${city}</strong>: ${count} flights`;
+  topDestinationsEl.appendChild(li);
     });
 
     const flightLogEl = document.getElementById("flight-log");
