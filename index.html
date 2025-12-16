@@ -256,7 +256,7 @@
   <header>
     <div>
       <h1>Alice & Theo Flight Tracker</h1>
-      <p>Every time we crossed the sky to see each other &lt;3</p>
+      <p>Every time we crossed the globe to see each other &lt;3</p>
     </div>
   </header>
 
@@ -272,7 +272,7 @@
     <aside>
       <section class="stat-grid">
         <div class="card">
-          <div class="card-title">Total Flights</div>
+          <div class="card-title">Total Trips</div>
           <div class="card-value" id="total-flights">–</div>
           <div class="subtext" id="flight-years"></div>
         </div>
@@ -311,7 +311,7 @@
       </section>
 
       <section style="margin-bottom: 1.5rem;">
-        <h2>Top Destinations</h2>
+        <h2>Our Top Destinations</h2>
         <ul id="top-destinations"></ul>
       </section>
 
@@ -361,7 +361,7 @@
         distance_km: 146,
         duration_min: 105,
         who: "her",
-        notes: "3rd date in Torekov 💜<br>Theo picked Alice up at the train station, she met the parents, Bina served them dinner. Way to meet the family 🥂 <br><strong>Key moments:</strong> “eat the fucking challah”, smoking and teeth-brushing on the rocks, lots of ferrero rocher xx"
+        notes: "3rd date in Torekov 💜<br>Theo picked Alice up at the train station, she met the parents and Bina for the first time 🚲 <br><strong>Key moments:</strong> “eat the fuckin challah”, smoking and teeth-brushing on the rocks, lots of ferrero rocher xx"
       },
       {
         date: "2025-09-05",
@@ -525,6 +525,7 @@
       const herTripKeys = new Set();
       const hisTripKeys = new Set();
 
+      // Per-leg stats (distance, time, years, trip ownership)
       flights.forEach(f => {
         totalDistance += f.distance_km || 0;
         totalMinutes += f.duration_min || 0;
@@ -540,9 +541,12 @@
         if (f.who === "him") {
           hisTripKeys.add(tripKey);
         }
+      });
 
-        // Top destinations ONLY use arrival city
-        const city = f.toCity || f.toName || f.to;
+      // Top destinations: count ONCE per trip (joint trips counted once)
+      tripGroups.forEach(group => {
+        const main = group[0];
+        const city = main.toCity || main.toName || main.to;
         if (city) {
           destinationCounts[city] = (destinationCounts[city] || 0) + 1;
         }
@@ -670,7 +674,7 @@
       .arcStartLng(d => d.fromLng)
       .arcEndLat(d => d.toLat)
       .arcEndLng(d => d.toLng)
-      .arcAltitude(d => 0.25 + (d._arcOffsetIndex || 0) * 0.14)  // more pronounced separation
+      .arcAltitude(d => 0.25 + (d._arcOffsetIndex || 0) * 0.14)
       .arcStroke(1.1)
       .arcsTransitionDuration(0)
       .arcColor(d => d.who === "her" ? "#c084fc" : "#60a5fa")
