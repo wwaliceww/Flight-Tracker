@@ -10,9 +10,7 @@
   <script src="https://unpkg.com/globe.gl"></script>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -38,16 +36,8 @@
       z-index: 10;
     }
 
-    header h1 {
-      margin: 0;
-      font-size: 1.4rem;
-    }
-
-    header p {
-      margin: 0;
-      opacity: 0.8;
-      font-size: 0.9rem;
-    }
+    header h1 { margin: 0; font-size: 1.4rem; }
+    header p { margin: 0; opacity: 0.8; font-size: 0.9rem; }
 
     main {
       flex: 1;
@@ -56,16 +46,8 @@
       min-height: 0;
     }
 
-    #globe-container {
-      position: relative;
-      min-height: 70vh;
-      overflow: hidden;
-    }
-
-    #globeViz {
-      width: 100%;
-      height: 100%;
-    }
+    #globe-container { position: relative; min-height: 70vh; overflow: hidden; }
+    #globeViz { width: 100%; height: 100%; }
 
     .globe-hint {
       position: absolute;
@@ -96,10 +78,7 @@
       display: none;
     }
 
-    #flight-info h3 {
-      margin: 0 0 0.35rem;
-      font-size: 1rem;
-    }
+    #flight-info h3 { margin: 0 0 0.35rem; font-size: 1rem; }
 
     #flight-info p {
       margin: 0.1rem 0;
@@ -114,11 +93,7 @@
       color: #9ca3af;
     }
 
-    #flight-info .notes {
-      margin-top: 0.45rem;
-      font-style: normal;
-      color: #e5e7eb;
-    }
+    #flight-info .notes { margin-top: 0.45rem; font-style: normal; color: #e5e7eb; }
 
     aside {
       padding: 1.25rem 1.5rem 1.5rem;
@@ -150,16 +125,9 @@
       margin-bottom: 0.2rem;
     }
 
-    .card-value {
-      font-size: 1.25rem;
-      font-weight: 600;
-    }
+    .card-value { font-size: 1.25rem; font-weight: 600; }
 
-    .subtext {
-      font-size: 0.75rem;
-      color: #9ca3af;
-      margin-top: 0.1rem;
-    }
+    .subtext { font-size: 0.75rem; color: #9ca3af; margin-top: 0.1rem; }
 
     h2 {
       font-size: 0.85rem;
@@ -169,37 +137,14 @@
       margin: 0 0 0.5rem;
     }
 
-    ul {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      font-size: 0.82rem;
-    }
+    ul { list-style: none; margin: 0; padding: 0; font-size: 0.82rem; }
+    li + li { margin-top: 0.25rem; }
 
-    li + li {
-      margin-top: 0.25rem;
-    }
-
-    .flight-log {
-      font-size: 0.8rem;
-    }
-
-    .flight-log li + li {
-      margin-top: 0.5rem;
-    }
-
-    .flight-log-date {
-      font-weight: 600;
-    }
-
-    .flight-log-route {
-      opacity: 0.95;
-    }
-
-    .flight-log-notes {
-      font-size: 0.75rem;
-      color: #9ca3af;
-    }
+    .flight-log { font-size: 0.8rem; }
+    .flight-log li + li { margin-top: 0.5rem; }
+    .flight-log-date { font-weight: 600; }
+    .flight-log-route { opacity: 0.95; }
+    .flight-log-notes { font-size: 0.75rem; color: #9ca3af; }
 
     .badge {
       display: inline-flex;
@@ -233,21 +178,10 @@
     }
 
     @media (max-width: 900px) {
-      main {
-        grid-template-columns: 1fr;
-      }
-      #globe-container {
-        height: 50vh;
-      }
-      aside {
-        border-left: none;
-        border-top: 1px solid rgba(148, 163, 184, 0.25);
-      }
-      #flight-info {
-        left: 0.75rem;
-        right: 0.75rem;
-        max-width: none;
-      }
+      main { grid-template-columns: 1fr; }
+      #globe-container { height: 50vh; }
+      aside { border-left: none; border-top: 1px solid rgba(148, 163, 184, 0.25); }
+      #flight-info { left: 0.75rem; right: 0.75rem; max-width: none; }
     }
   </style>
 </head>
@@ -256,7 +190,7 @@
   <header>
     <div>
       <h1>Alice & Theo Global Flight Tracker</h1>
-      <p>Saving the relationship, not the planet <3</p>
+      <p>Saving the relationship, not the planet &lt;3</p>
     </div>
   </header>
 
@@ -327,8 +261,10 @@
   </footer>
 
   <script>
-    // 1. Flight data
+    // 1. Flight data (UPDATED with your 3 new entries)
     const flights = [
+      // NEW #12
+      
       {
         date: "2025-07-06",
         fromCity: "Copenhagen",
@@ -482,57 +418,59 @@
         who: "her",
         notes: "JUL TAKEOVER 🎄<br>Mys, film, glögg, mer mys<br><strong>Key moments:</strong> Family time, julbord, wig and nothing else 💋"
       },
+
+      // NEW #10 + #11 (same date + same arrival city => joint trip in your grouping logic)
       {
-      date: "2025-12-25",
-      fromCity: "Copenhagen",
-      from: "CPH",
-      fromName: "Copenhagen Airport",
-      fromLat: 55.6180,
-      fromLng: 12.6508,
-      toCity: "Tel Aviv",
-      to: "TLV",
-      toName: "Ben Gurion International Airport",
-      toLat: 32.0114,
-      toLng: 34.8867,
-      distance_km: 3300,
-      duration_min: 270,
-      who: "him",
-      notes: "HOLY (shit) LAND ✡️ <br>2 week trip to Tel Aviv with Theo's family, Alice's friends and moshav getaway🌴 <br><strong>Key moments:</strong> First hotel room together, TLV beach dip 🏖 dancing with Ben, horseback riding 🐴 hummus + schnitzel + labaneh, NYE party 🪩"
-    },
-    {
-      date: "2025-12-25",
-      fromCity: "Milan",
-      from: "LIN",
-      fromName: "Milan Linate Airport",
-      fromLat: 45.4451,
-      fromLng: 9.2767,
-      toCity: "Tel Aviv",
-      to: "TLV",
-      toName: "Ben Gurion International Airport",
-      toLat: 32.0114,
-      toLng: 34.8867,
-      distance_km: 2500,
-      duration_min: 250,
-      who: "her",
-      notes: ""
-    },
-    {
-      date: "2026-01-13",
-      fromCity: "Milan",
-      from: "LIN",
-      fromName: "Milan Linate Airport",
-      fromLat: 45.4451,
-      fromLng: 9.2767,
-      toCity: "Copenhagen",
-      to: "CPH",
-      toName: "Copenhagen Airport",
-      toLat: 55.6180,
-      toLng: 12.6508,
-      distance_km: 1165,
-      duration_min: 125,
-      who: "her",
-      notes: "SPONTANEOUS BOO 💥 <br>Post mensig jet setter popped over to Cph for 2 vardag nights just to cuddle <br><strong>Key moments:</strong> we had.... 2 moments?? Cozy dinner & booked flights❤️‍🔥"
-    }
+        date: "2025-12-25",
+        fromCity: "Copenhagen",
+        from: "CPH",
+        fromName: "Copenhagen Airport",
+        fromLat: 55.6180,
+        fromLng: 12.6508,
+        toCity: "Tel Aviv",
+        to: "TLV",
+        toName: "Ben Gurion International Airport",
+        toLat: 32.0114,
+        toLng: 34.8867,
+        distance_km: 3300,
+        duration_min: 270,
+        who: "him",
+        notes: "HOLY (shit) LAND ✡️ <br>2 week trip to Tel Aviv with Theo's family, Alice's friends and moshav getaway🌴 <br><strong>Key moments:</strong> First hotel room together, TLV beach dip 🏖 dancing with Ben, horseback riding 🐴 hummus + schnitzel + labaneh, NYE party 🪩"
+      },
+      {
+        date: "2025-12-25",
+        fromCity: "Milan",
+        from: "LIN",
+        fromName: "Milan Linate Airport",
+        fromLat: 45.4451,
+        fromLng: 9.2767,
+        toCity: "Tel Aviv",
+        to: "TLV",
+        toName: "Ben Gurion International Airport",
+        toLat: 32.0114,
+        toLng: 34.8867,
+        distance_km: 2500,
+        duration_min: 250,
+        who: "her",
+        notes: "" // add text here if you want this leg to have its own notes
+      },
+      {
+        date: "2026-01-13",
+        fromCity: "Milan",
+        from: "LIN",
+        fromName: "Milan Linate Airport",
+        fromLat: 45.4451,
+        fromLng: 9.2767,
+        toCity: "Copenhagen",
+        to: "CPH",
+        toName: "Copenhagen Airport",
+        toLat: 55.6180,
+        toLng: 12.6508,
+        distance_km: 1165,
+        duration_min: 125,
+        who: "her",
+        notes: "SPONTANEOUS BOO 💥 <br>Post mensig jet setter popped over to Cph for 2 vardag nights just to cuddle <br><strong>Key moments:</strong> we had.... 2 moments?? Cozy dinner & booked flights❤️‍🔥"
+      }
     ];
 
     // Helper: trip key = same date + same arrival city → same trip
@@ -586,21 +524,15 @@
 
         const tripKey = f._tripKey || getTripKey(f);
 
-        if (f.who === "her") {
-          herTripKeys.add(tripKey);
-        }
-        if (f.who === "him") {
-          hisTripKeys.add(tripKey);
-        }
+        if (f.who === "her") herTripKeys.add(tripKey);
+        if (f.who === "him") hisTripKeys.add(tripKey);
       });
 
       // Top destinations: count ONCE per trip (joint trips counted once)
       tripGroups.forEach(group => {
         const main = group[0];
         const city = main.toCity || main.toName || main.to;
-        if (city) {
-          destinationCounts[city] = (destinationCounts[city] || 0) + 1;
-        }
+        if (city) destinationCounts[city] = (destinationCounts[city] || 0) + 1;
       });
 
       const hours = Math.floor(totalMinutes / 60);
@@ -694,10 +626,13 @@
       flightLogEl.appendChild(li);
     });
 
-    // 4. Avoid overlapping routes: give repeated routes a more pronounced offset
+    // 4. Avoid overlapping routes
+    // IMPORTANT CHANGE: group A→B and B→A together so return legs also offset cleanly.
     const routeGroups = new Map();
     flights.forEach(f => {
-      const key = [f.fromLat, f.fromLng, f.toLat, f.toLng].join("|");
+      const a = `${f.fromLat},${f.fromLng}`;
+      const b = `${f.toLat},${f.toLng}`;
+      const key = [a, b].sort().join("|"); // direction-agnostic
       if (!routeGroups.has(key)) routeGroups.set(key, []);
       routeGroups.get(key).push(f);
     });
