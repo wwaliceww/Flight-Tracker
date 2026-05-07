@@ -1,29 +1,16 @@
-@@ -2,17 +2,15 @@
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Alice & Theo Flight Tracker – Around the Globe</title>
-  <title>Alice & Theo Flight Tracker – 3D Globe</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script src="https://unpkg.com/globe.gl"></script>
 
-  <!-- Three.js + Globe.gl -->
-  <script src="https://unpkg.com/three@0.158.0/build/three.min.js"></script>
-  <script src="https://unpkg.com/globe.gl@4.6.6/dist/globe.gl.min.js"></script>
-  <!-- FIX: added defer -->
-  <script src="https://unpkg.com/three@0.158.0/build/three.min.js" defer></script>
-  <script src="https://unpkg.com/globe.gl" defer></script>
-
-  <style>
+<style>
     * {
       box-sizing: border-box;
     }
     * { box-sizing: border-box; }
 
-    body {
-      margin: 0;
+body {
+margin: 0;
 @@ -38,16 +36,8 @@
-      z-index: 10;
-    }
+z-index: 10;
+}
 
     header h1 {
       margin: 0;
@@ -38,76 +25,74 @@
     header h1 { margin: 0; font-size: 1.4rem; }
     header p { margin: 0; opacity: 0.8; font-size: 0.9rem; }
 
-    main {
-      flex: 1;
-@@ -56,9 +46,11 @@
-      min-height: 0;
-    }
+main {
+flex: 1;
+@@ -56,16 +46,8 @@
+min-height: 0;
+}
 
-    /* ✅ FIXED HERE */
     #globe-container {
       position: relative;
       min-height: 70vh;
-      height: 70vh; /* was min-height */
       overflow: hidden;
     }
 
     #globeViz {
-@@ -77,109 +69,45 @@
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      backdrop-filter: blur(12px);
-      z-index: 5;
+      width: 100%;
+      height: 100%;
     }
+    #globe-container { position: relative; min-height: 70vh; overflow: hidden; }
+    #globeViz { width: 100%; height: 100%; }
 
-    aside {
-      padding: 1.25rem 1.5rem 1.5rem;
-      background: radial-gradient(circle at top left, #020617, #020617 40%, #000 100%);
-      border-left: 1px solid rgba(148, 163, 184, 0.25);
-      overflow-y: auto;
-    }
+.globe-hint {
+position: absolute;
+@@ -96,10 +78,7 @@
+display: none;
+}
 
-    .stat-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 0.75rem;
-      margin-bottom: 1.5rem;
+    #flight-info h3 {
+      margin: 0 0 0.35rem;
+      font-size: 1rem;
     }
+    #flight-info h3 { margin: 0 0 0.35rem; font-size: 1rem; }
 
-    .card {
-      padding: 0.75rem 0.9rem;
-      border-radius: 0.9rem;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(148, 163, 184, 0.35);
-      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.85);
-    }
+#flight-info p {
+margin: 0.1rem 0;
+@@ -114,11 +93,7 @@
+color: #9ca3af;
+}
 
-    .card-title {
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: #9ca3af;
-      margin-bottom: 0.2rem;
+    #flight-info .notes {
+      margin-top: 0.45rem;
+      font-style: normal;
+      color: #e5e7eb;
     }
+    #flight-info .notes { margin-top: 0.45rem; font-style: normal; color: #e5e7eb; }
+
+aside {
+padding: 1.25rem 1.5rem 1.5rem;
+@@ -150,16 +125,9 @@
+margin-bottom: 0.2rem;
+}
 
     .card-value {
       font-size: 1.25rem;
       font-weight: 600;
     }
+    .card-value { font-size: 1.25rem; font-weight: 600; }
 
     .subtext {
       font-size: 0.75rem;
       color: #9ca3af;
       margin-top: 0.1rem;
     }
+    .subtext { font-size: 0.75rem; color: #9ca3af; margin-top: 0.1rem; }
 
-    h2 {
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: #9ca3af;
-      margin: 0 0 0.5rem;
-    }
+h2 {
+font-size: 0.85rem;
+@@ -169,37 +137,14 @@
+margin: 0 0 0.5rem;
+}
 
     ul {
       list-style: none;
@@ -119,6 +104,8 @@
     li + li {
       margin-top: 0.25rem;
     }
+    ul { list-style: none; margin: 0; padding: 0; font-size: 0.82rem; }
+    li + li { margin-top: 0.25rem; }
 
     .flight-log {
       font-size: 0.8rem;
@@ -126,73 +113,32 @@
 
     .flight-log li + li {
       margin-top: 0.5rem;
-    #flight-info {
-      position: absolute;
-      left: 1.25rem;
-      top: 1.25rem;
-      max-width: 320px;
-      background: rgba(15, 23, 42, 0.96);
-      border-radius: 1rem;
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      padding: 0.9rem 1rem;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
-      z-index: 6;
-      display: none;
     }
 
     .flight-log-date {
       font-weight: 600;
     }
-    #flight-info h3 { margin: 0 0 0.35rem; font-size: 1rem; }
 
     .flight-log-route {
       opacity: 0.95;
-    #flight-info p {
-      margin: 0.1rem 0;
-      font-size: 0.9rem;
-      line-height: 1.35;
     }
 
     .flight-log-notes {
-    #flight-info .label {
       font-size: 0.75rem;
       color: #9ca3af;
     }
+    .flight-log { font-size: 0.8rem; }
+    .flight-log li + li { margin-top: 0.5rem; }
+    .flight-log-date { font-weight: 600; }
+    .flight-log-route { opacity: 0.95; }
+    .flight-log-notes { font-size: 0.75rem; color: #9ca3af; }
 
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      padding: 0.2rem 0.6rem;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: #9ca3af;
-    }
+.badge {
+display: inline-flex;
+@@ -233,21 +178,10 @@
+}
 
-    .legend-color {
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
-      display: inline-block;
-      margin-right: 0.4rem;
-    #flight-info .notes { margin-top: 0.45rem; font-style: normal; color: #e5e7eb; }
-
-    aside {
-      padding: 1.25rem 1.5rem 1.5rem;
-      background: radial-gradient(circle at top left, #020617, #020617 40%, #000 100%);
-      border-left: 1px solid rgba(148, 163, 184, 0.25);
-      overflow-y: auto;
-    }
-
-    footer {
-@@ -192,270 +120,49 @@
-    }
-
-    @media (max-width: 900px) {
+@media (max-width: 900px) {
       main {
         grid-template-columns: 1fr;
       }
@@ -203,281 +149,187 @@
         border-left: none;
         border-top: 1px solid rgba(148, 163, 184, 0.25);
       }
+      #flight-info {
+        left: 0.75rem;
+        right: 0.75rem;
+        max-width: none;
+      }
       main { grid-template-columns: 1fr; }
       #globe-container { height: 50vh; }
       aside { border-left: none; border-top: 1px solid rgba(148, 163, 184, 0.25); }
-    }
-  </style>
+      #flight-info { left: 0.75rem; right: 0.75rem; max-width: none; }
+}
+</style>
 </head>
-
-<body>
-  <header>
-    <div>
-      <h1>Alice & Theo Flight Tracker</h1>
-      <p>Every time we crossed the sky to see each other <3 </p>
-      <h1>Alice & Theo Global Flight Tracker</h1>
+@@ -256,7 +190,7 @@
+<header>
+<div>
+<h1>Alice & Theo Global Flight Tracker</h1>
+      <p>Saving the relationship, not the planet <3</p>
       <p>Saving the relationship, not the planet &lt;3</p>
-    </div>
-  </header>
+</div>
+</header>
 
-  <main>
-    <section id="globe-container">
-      <div id="globeViz"></div>
-      <div class="globe-hint">Drag to spin · Scroll to zoom · Tap flights to highlight</div>
-      <div class="globe-hint">Drag to spin · Scroll to zoom · Click a route for details</div>
-      <div id="flight-info"></div>
-    </section>
+@@ -327,8 +261,10 @@ <h2>Flight Log</h2>
+</footer>
 
-    <aside>
-      <section class="stat-grid">
-        <div class="card">
-          <div class="card-title">Total Flights</div>
-          <div class="card-value" id="total-flights">–</div>
-          <div class="subtext" id="flight-years"></div>
-        </div>
+<script>
+    // 1. Flight data
+    // 1. Flight data (UPDATED with your 3 new entries)
+const flights = [
+      // NEW #12
+      
+{
+date: "2025-07-06",
+fromCity: "Copenhagen",
+@@ -482,57 +418,59 @@ <h2>Flight Log</h2>
+who: "her",
+notes: "JUL TAKEOVER 🎄<br>Mys, film, glögg, mer mys<br><strong>Key moments:</strong> Family time, julbord, wig and nothing else 💋"
+},
 
-        <div class="card">
-          <div class="card-title">Distance Flown</div>
-          <div class="card-value" id="total-distance">–</div>
-          <div class="subtext" id="distance-subtext"></div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">Time in the Air</div>
-          <div class="card-value" id="total-time">–</div>
-          <div class="subtext">Based on the flights you logged 💺</div>
-        </div>
-
-        <!-- NEW CARD: total time including way home -->
-        <div class="card">
-          <div class="card-title">Time Including Way Home</div>
-          <div class="card-value" id="total-time-returns">–</div>
-          <div class="subtext">Assuming every flight has a return of similar length 🔁</div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">Her &amp; His Flights</div>
-          <div class="card-value" id="her-his-flights">–</div>
-          <div class="subtext">
-            <span class="badge">
-              <span class="legend-color" style="background: #a855f7;"></span> Her routes
-            </span>
-            &nbsp;
-            <span class="badge">
-              <span class="legend-color" style="background: #38bdf8;"></span> His routes
-            </span>
-          </div>
-        </div>
-      </section>
-
-      <section style="margin-bottom: 1.5rem;">
-        <h2>Our Top Destinations</h2>
-        <ul id="top-destinations"></ul>
-      </section>
-
-      <section style="margin-bottom: 1.5rem;">
-        <h2>Flight Log</h2>
-        <ul id="flight-log" class="flight-log"></ul>
-      </section>
-    </aside>
-    <aside></aside>
-  </main>
-
-  <footer>
-    Made with ❤️
-  </footer>
-  <footer>Made with ❤️</footer>
-
-  <script>
-    // 1. Your flight data
-    const flights = [
-      {
-        date: "2023-06-14",
-        from: "FCO",
-        fromName: "Rome Fiumicino",
-        fromLat: 41.8003,
-        fromLng: 12.2389,
-        to: "CDG",
-        toName: "Paris Charles de Gaulle",
-        toLat: 49.0097,
-        toLng: 2.5479,
-        distance_km: 1105,
-        duration_min: 120,
-        who: "her",
-        notes: "First trip to meet in Paris after months of texting 🥹"
+      // NEW #10 + #11 (same date + same arrival city => joint trip in your grouping logic)
+{
+      date: "2025-12-25",
+      fromCity: "Copenhagen",
+      from: "CPH",
+      fromName: "Copenhagen Airport",
+      fromLat: 55.6180,
+      fromLng: 12.6508,
+      toCity: "Tel Aviv",
+      to: "TLV",
+      toName: "Ben Gurion International Airport",
+      toLat: 32.0114,
+      toLng: 34.8867,
+      distance_km: 3300,
+      duration_min: 270,
+      who: "him",
+      notes: "HOLY (shit) LAND ✡️ <br>2 week trip to Tel Aviv with Theo's family, Alice's friends and moshav getaway🌴 <br><strong>Key moments:</strong> First hotel room together, TLV beach dip 🏖 dancing with Ben, horseback riding 🐴 hummus + schnitzel + labaneh, NYE party 🪩"
+    },
+    {
+      date: "2025-12-25",
+      fromCity: "Milan",
+      from: "LIN",
+      fromName: "Milan Linate Airport",
+      fromLat: 45.4451,
+      fromLng: 9.2767,
+      toCity: "Tel Aviv",
+      to: "TLV",
+      toName: "Ben Gurion International Airport",
+      toLat: 32.0114,
+      toLng: 34.8867,
+      distance_km: 2500,
+      duration_min: 250,
+      who: "her",
+      notes: ""
+    },
+    {
+      date: "2026-01-13",
+      fromCity: "Milan",
+      from: "LIN",
+      fromName: "Milan Linate Airport",
+      fromLat: 45.4451,
+      fromLng: 9.2767,
+      toCity: "Copenhagen",
+      to: "CPH",
+      toName: "Copenhagen Airport",
+      toLat: 55.6180,
+      toLng: 12.6508,
+      distance_km: 1165,
+      duration_min: 125,
+      who: "her",
+      notes: "SPONTANEOUS BOO 💥 <br>Post mensig jet setter popped over to Cph for 2 vardag nights just to cuddle <br><strong>Key moments:</strong> we had.... 2 moments?? Cozy dinner & booked flights❤️‍🔥"
+    }
+        date: "2025-12-25",
+        fromCity: "Copenhagen",
+        from: "CPH",
+        fromName: "Copenhagen Airport",
+        fromLat: 55.6180,
+        fromLng: 12.6508,
+        toCity: "Tel Aviv",
+        to: "TLV",
+        toName: "Ben Gurion International Airport",
+        toLat: 32.0114,
+        toLng: 34.8867,
+        distance_km: 3300,
+        duration_min: 270,
+        who: "him",
+        notes: "HOLY (shit) LAND ✡️ <br>2 week trip to Tel Aviv with Theo's family, Alice's friends and moshav getaway🌴 <br><strong>Key moments:</strong> First hotel room together, TLV beach dip 🏖 dancing with Ben, horseback riding 🐴 hummus + schnitzel + labaneh, NYE party 🪩"
       },
       {
-        date: "2023-08-02",
-        from: "JFK",
-        fromName: "New York JFK",
-        fromLat: 40.6413,
-        fromLng: -73.7781,
-        to: "FCO",
-        toName: "Rome Fiumicino",
-        toLat: 41.8003,
-        toLng: 12.2389,
-        distance_km: 6898,
-        duration_min: 510,
-        who: "him",
-        notes: "He flew to see me in Rome for the summer 🇮🇹"
+        date: "2025-12-25",
+        fromCity: "Milan",
+        from: "LIN",
+        fromName: "Milan Linate Airport",
+        fromLat: 45.4451,
+        fromLng: 9.2767,
+        toCity: "Tel Aviv",
+        to: "TLV",
+        toName: "Ben Gurion International Airport",
+        toLat: 32.0114,
+        toLng: 34.8867,
+        distance_km: 2500,
+        duration_min: 250,
+        who: "her",
+        notes: "" // add text here if you want this leg to have its own notes
+      },
+      {
+        date: "2026-01-13",
+        fromCity: "Milan",
+        from: "LIN",
+        fromName: "Milan Linate Airport",
+        fromLat: 45.4451,
+        fromLng: 9.2767,
+        toCity: "Copenhagen",
+        to: "CPH",
+        toName: "Copenhagen Airport",
+        toLat: 55.6180,
+        toLng: 12.6508,
+        distance_km: 1165,
+        duration_min: 125,
+        who: "her",
+        notes: "SPONTANEOUS BOO 💥 <br>Post mensig jet setter popped over to Cph for 2 vardag nights just to cuddle <br><strong>Key moments:</strong> we had.... 2 moments?? Cozy dinner & booked flights❤️‍🔥"
       }
-      // Add more flights here…
-    ];
+];
 
-    // 2. Compute stats
-    function computeStats(flights) {
-      const totalFlights = flights.length;
-      let totalDistance = 0;
-      let totalMinutes = 0;
-      const airportCounts = {};
-      const years = new Set();
-      let herFlights = 0;
-      let hisFlights = 0;
+// Helper: trip key = same date + same arrival city → same trip
+@@ -586,21 +524,15 @@ <h2>Flight Log</h2>
 
-      flights.forEach(f => {
-        totalDistance += f.distance_km || 0;
-        totalMinutes += f.duration_min || 0;
+const tripKey = f._tripKey || getTripKey(f);
 
-        if (f.who === "her") herFlights++;
-        if (f.who === "him") hisFlights++;
+        if (f.who === "her") {
+          herTripKeys.add(tripKey);
+        }
+        if (f.who === "him") {
+          hisTripKeys.add(tripKey);
+        }
+        if (f.who === "her") herTripKeys.add(tripKey);
+        if (f.who === "him") hisTripKeys.add(tripKey);
+});
 
-        const date = new Date(f.date);
-        if (!isNaN(date)) years.add(date.getFullYear());
+// Top destinations: count ONCE per trip (joint trips counted once)
+tripGroups.forEach(group => {
+const main = group[0];
+const city = main.toCity || main.toName || main.to;
+        if (city) {
+          destinationCounts[city] = (destinationCounts[city] || 0) + 1;
+        }
+        if (city) destinationCounts[city] = (destinationCounts[city] || 0) + 1;
+});
 
-        [f.fromName, f.toName].forEach(name => {
-          if (!name) return;
-          airportCounts[name] = (airportCounts[name] || 0) + 1;
-        });
-      });
+const hours = Math.floor(totalMinutes / 60);
+@@ -694,10 +626,13 @@ <h2>Flight Log</h2>
+flightLogEl.appendChild(li);
+});
 
-      const hours = Math.floor(totalMinutes / 60);
-      const minutes = totalMinutes % 60;
-
-      const sortedDestinations = Object.entries(airportCounts)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 5);
-
-      return {
-        totalFlights,
-        totalDistance,
-        hours,
-        minutes,
-        totalMinutes,      // <— NEW: return total minutes
-        herFlights,
-        hisFlights,
-        sortedDestinations,
-        years: Array.from(years).sort()
-      };
-    }
-
-    const stats = computeStats(flights);
-
-    // 3. Render stats in the side panel
-    document.getElementById("total-flights").textContent = stats.totalFlights;
-
-    const flightYearsEl = document.getElementById("flight-years");
-    if (stats.years.length === 1) {
-      flightYearsEl.textContent = `Since ${stats.years[0]}`;
-    } else if (stats.years.length > 1) {
-      flightYearsEl.textContent = `${stats.years[0]}–${stats.years[stats.years.length - 1]}`;
-    }
-
-    document.getElementById("total-distance").textContent =
-      `${stats.totalDistance.toLocaleString()} km`;
-
-    const aroundEarthKm = 40075;
-    const distanceSubEl = document.getElementById("distance-subtext");
-    if (stats.totalDistance > 0) {
-      const laps = stats.totalDistance / aroundEarthKm;
-      distanceSubEl.textContent = `${laps.toFixed(2)} × around the Earth 🌍`;
-    } else {
-      distanceSubEl.textContent = "";
-    }
-
-    document.getElementById("total-time").textContent =
-      `${stats.hours} h ${stats.minutes} min`;
-
-    // NEW: total time including way home
-    const totalMinutesReturns = stats.totalMinutes * 2;
-    const hoursReturns = Math.floor(totalMinutesReturns / 60);
-    const minutesReturns = totalMinutesReturns % 60;
-    document.getElementById("total-time-returns").textContent =
-      `${hoursReturns} h ${minutesReturns} min`;
-
-    document.getElementById("her-his-flights").textContent =
-      `Her: ${stats.herFlights} · Him: ${stats.hisFlights}`;
-
-    const topDestinationsEl = document.getElementById("top-destinations");
-    topDestinationsEl.innerHTML = "";
-    stats.sortedDestinations.forEach(([name, count]) => {
-      const li = document.createElement("li");
-      li.textContent = `${name}: ${count} flights`;
-      topDestinationsEl.appendChild(li);
-    });
-
-    const flightLogEl = document.getElementById("flight-log");
-    const sortedFlights = [...flights].sort((a, b) => {
-      const da = new Date(a.date);
-      const db = new Date(b.date);
-      return da - db;
-    });
-
-    sortedFlights.forEach(f => {
-      const li = document.createElement("li");
-      const whoLabel = f.who === "her" ? "her flight" : f.who === "him" ? "his flight" : "both";
-      li.innerHTML = `
-        <div class="flight-log-date">${f.date}</div>
-        <div class="flight-log-route">${f.from} → ${f.to} (${whoLabel})</div>
-        <div class="flight-log-notes">${f.notes ? f.notes : "No notes yet"}</div>
-      `;
-      flightLogEl.appendChild(li);
-    });
-
-    // 4. 3D globe with arcs
-    const globeElement = document.getElementById("globeViz");
-    const infoPanel = document.getElementById("flight-info");
-
-    const world = Globe()
-      (globeElement)
-      .globeImageUrl("//unpkg.com/three-globe/example/img/earth-dark.jpg")
-      .bumpImageUrl("//unpkg.com/three-globe/example/img/earth-topology.png")
-      .backgroundColor("rgba(0,0,0,0)")
-      .showAtmosphere(true)
-      .atmosphereColor("#38bdf8")
-      .atmosphereAltitude(0.22)
-      .arcStartLat(d => d.fromLat)
-      .arcStartLng(d => d.fromLng)
-      .arcEndLat(d => d.toLat)
-      .arcEndLng(d => d.toLng)
-      .arcAltitude(d => 0.2)
-      .arcStroke(0.6)
-      .arcDashLength(0.4)
-      .arcDashGap(0.9)
-      .arcDashAnimateTime(2500)
-      .arcLabel(d => {
-        const whoLabel = d.who === "her" ? "Her flight" : d.who === "him" ? "His flight" : "Our flight";
-        return `${whoLabel}\n${d.fromName} → ${d.toName}\n${d.date}\n${d.distance_km.toLocaleString()} km · ${Math.round(d.duration_min / 60)} h ${d.duration_min % 60} min\n${d.notes || ""}`;
-      })
-      .arcColor(d => d.who === "her" ? "#a855f7" : "#38bdf8");
-    const world = Globe()(globeElement)
-      .globeImageUrl("https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg")
-      .backgroundColor("rgba(0,0,0,0)");
-
-    world.arcsData(flights);
-    // ✅ FIX: force correct sizing
-    world.width(globeElement.clientWidth);
-    world.height(globeElement.clientHeight);
-
-    world.pointOfView({ lat: 25, lng: 5, altitude: 2.1 }, 0);
-
-    const controls = world.controls();
-    controls.autoRotate = true;
-    controls.autoRotateSpeed = 0.45;
-    // ✅ FIX: keep responsive
-    window.addEventListener("resize", () => {
-      world.width(globeElement.clientWidth);
-      world.height(globeElement.clientHeight);
-    });
-  </script>
-</body>
-</html>
+    // 4. Avoid overlapping routes: give repeated routes a more pronounced offset
+    // 4. Avoid overlapping routes
+    // IMPORTANT CHANGE: group A→B and B→A together so return legs also offset cleanly.
+const routeGroups = new Map();
+flights.forEach(f => {
+      const key = [f.fromLat, f.fromLng, f.toLat, f.toLng].join("|");
+      const a = `${f.fromLat},${f.fromLng}`;
+      const b = `${f.toLat},${f.toLng}`;
+      const key = [a, b].sort().join("|"); // direction-agnostic
+if (!routeGroups.has(key)) routeGroups.set(key, []);
+routeGroups.get(key).push(f);
+});
